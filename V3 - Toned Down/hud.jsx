@@ -162,7 +162,7 @@ function randInt(min, max) {
       pointer-events: none;
       user-select: none;
       overflow: hidden;
-      opacity: var(--hud-micro-opacity, 0.70);
+      opacity: 0.70;
     }
     .hud-corner {
       position: absolute;

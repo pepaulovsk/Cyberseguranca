@@ -26,12 +26,37 @@
       --mba-font-primary: 'Poppins', system-ui, sans-serif;
       --mba-font-secondary: 'Roboto', system-ui, sans-serif;
       --mba-font-deco: 'Roboto', system-ui, sans-serif;
+      /* tokens semânticos MBA (fundo branco) */
+      --mba-color-heading:  #0A1628;
+      --mba-color-body:     #2D3748;
+      --mba-color-caption:  #5A6779;
+      --mba-color-primary:  #0d3db2;
+      /* tokens de cor MBA (grupo Cores) */
+      --mba-color-bg:       #FAFAFA;
+      --mba-color-surface:  #FFFFFF;
 
       /* ── Curso Design System ─────────────────────────────────────────── */
       --curso-color: #00CBC9;
       --curso-font-primary: 'Poppins', system-ui, sans-serif;
       --curso-font-secondary: 'Roboto', system-ui, sans-serif;
       --curso-font-deco: 'JetBrains Mono', ui-monospace, monospace;
+      /* tokens semânticos Curso (fundo escuro) */
+      --curso-color-heading:   #E6EEF8;
+      --curso-color-body:      rgba(230, 238, 248, 0.80);
+      --curso-color-caption:   rgba(230, 238, 248, 0.55);
+      --curso-color-primary:   #00CBC9;
+      /* tokens de cor Curso (grupo Cores) */
+      --curso-color-bg:        #0F1F38;
+      --curso-color-surface:   rgba(255, 255, 255, 0.06);
+      --curso-color-hero:      #0A1628;
+      --curso-color-secondary: #7C3AED;
+      --curso-color-secondary-rgb: 124, 58, 237;
+
+      /* ── Tokens resolvidos — DS ativo via cascade ────────────────────── */
+      --ds-color-heading:   var(--mba-color-heading);
+      --ds-color-body:      var(--mba-color-body);
+      --ds-color-caption:   var(--mba-color-caption);
+      --ds-color-primary:   var(--mba-color-primary);
 
       /* ── Token mapping — resolved via CSS cascade ────────────────────── */
       --color-primary: var(--curso-color);
@@ -176,18 +201,29 @@
        Etapa 2: `.section-deep.alt` usa --color-deep-2 para diferenciar
        seções deep adjacentes (Hero deep + Mercado deep-alt criavam um
        bloco indistinto após Etapa 1). Diferenciação tonal mínima. */
+    .section-deep,
+    .hero {
+      /* tokens DS Curso sobrepõem tokens MBA via cascade */
+      --font-heading: var(--curso-font-primary);
+      --font-body: var(--curso-font-secondary);
+      --font-ui: var(--curso-font-deco);
+      --ds-color-heading:  var(--curso-color-heading);
+      --ds-color-body:     var(--curso-color-body);
+      --ds-color-caption:  var(--curso-color-caption);
+      --ds-color-primary:  var(--curso-color-primary);
+      /* secondary controla tags roxas globalmente */
+      --color-accent:      var(--curso-color-secondary);
+      --color-accent-rgb:  var(--curso-color-secondary-rgb);
+    }
     .section-deep {
-      background: var(--color-deep);
+      background: var(--curso-color-hero, var(--color-deep));
       color: var(--color-text-on-deep);
       position: relative;
       overflow: hidden;
       isolation: isolate;
-      --font-heading: var(--curso-font-primary);
-      --font-body: var(--curso-font-secondary);
-      --font-ui: var(--curso-font-deco);
     }
     .section-deep.alt {
-      background: var(--color-deep-2);
+      background: var(--curso-color-bg, var(--color-deep-2));
     }
     .section-deep > * { position: relative; z-index: 1; }
 
@@ -247,20 +283,33 @@
     /* em seções escuras: sabor do curso */
     .section-deep .eyebrow { color: var(--color-primary); }
 
-    /* ── .hud reutilizado como classe utilitária de meta/fonte ──────
-       Etapa 1: os componentes de HUD decorativo (SerialTag/BinaryStrip/
-       Coordinates/Timestamp) foram retirados das seções. A classe `.hud`
-       continua sendo usada apenas em CITAÇÕES DE FONTE e MICRO-METADATA
-       reais ("Robert Half · 2026", "a partir de", "Total R$ 13.134 em
-       22 parcelas"). Aqui ela vira tipografia secundária neutra — sem
-       monospace, sem pseudo-telemetria. */
+    /* ── .hud — classe dos ornamentos decorativos (aria-hidden) ────────
+       Cor via --ds-color-caption; cascade garante contraste correto
+       em seções claras (MBA) e escuras (Curso) automaticamente. */
     .hud {
       font-family: var(--font-ui);
       font-size: var(--fs-caption);
       letter-spacing: 0.04em;
-      color: var(--color-text-muted);
+      color: var(--ds-color-caption);
     }
-    .section-deep .hud { color: rgba(230, 238, 248, 0.55); }
+
+    /* ── .ds-caption / .ds-caption-micro — tokens semânticos de legenda ─
+       Usados em atribuições de fonte, metadados e micro-labels reais.
+       Herdam --ds-color-caption que muda automaticamente por contexto DS. */
+    .ds-caption {
+      font-family: var(--font-ui);
+      font-size: var(--fs-caption);
+      letter-spacing: 0.04em;
+      color: var(--ds-color-caption);
+      line-height: 1.4;
+    }
+    .ds-caption-micro {
+      font-family: var(--font-ui);
+      font-size: var(--fs-micro);
+      letter-spacing: 0.1em;
+      color: var(--ds-color-caption);
+      text-transform: uppercase;
+    }
 
     /* ── focus ring ───────────────────────────────────────────────── */
     :focus-visible {

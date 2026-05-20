@@ -29,96 +29,96 @@ const FONTS_OPTIONS = [
 ];
 
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-  "mbaBg":                  "#FAFAFA",
-  "mbaSurface":             "#FFFFFF",
-  "mbaDeep":                "#0A1628",
-  "mbaAccent":              "#0d3db2",
-  "mbaRadius":              14,
-  "mbaFontPrimary":         "Poppins",
-  "mbaFontPrimaryColor":    "#0A1628",
-  "mbaFontSecondary":       "Roboto",
-  "mbaFontSecondaryColor":  "#4A5568",
-  "mbaFontDeco":            "Roboto",
-  "mbaFontDecoColor":       "#0d3db2",
-  "cursoBg":                "#FAFAFA",
-  "cursoSurface":           "#FFFFFF",
-  "cursoDeep":              "#0A1628",
-  "cursoAccent":            "#00CBC9",
-  "cursoRadius":            14,
-  "cursoFontPrimary":       "Poppins",
-  "cursoFontPrimaryColor":  "#0A1628",
-  "cursoFontSecondary":     "Roboto",
-  "cursoFontSecondaryColor":"#4A5568",
-  "cursoFontDeco":          "JetBrains Mono",
-  "cursoFontDecoColor":     "#00CBC9",
-  "tempero":                true,
-  "gridIntensity":          "normal",
-  "hudDensity":             "minimal",
-  "mercadoLightSpeed":      "normal",
-  "mercadoLightIntensity":  "medium",
-  "mercadoLightWidth":      2,
-  "hudMicroOpacity":        70,
-  "dotGap":                 32,
-  "dotSize":                1.5
+  "mbaBg":                 "#FAFAFA",
+  "mbaBgOpacity":          100,
+  "mbaSurface":            "#FFFFFF",
+  "mbaSurfaceOpacity":     100,
+  "mbaPrimary":            "#0d3db2",
+  "mbaPrimaryOpacity":     100,
+  "mbaRadius":             14,
+  "mbaFontPrimary":        "Poppins",
+  "mbaHeading":            "#0A1628",
+  "mbaHeadingOpacity":     100,
+  "mbaFontSecondary":      "Roboto",
+  "mbaBody":               "#2D3748",
+  "mbaBodyOpacity":        100,
+  "mbaFontDeco":           "Roboto",
+  "mbaCaption":            "#5A6779",
+  "mbaCaptionOpacity":     100,
+  "cursoBg":               "#0F1F38",
+  "cursoBgOpacity":        100,
+  "cursoSurface":          "#FFFFFF",
+  "cursoSurfaceOpacity":   6,
+  "cursoHero":             "#0A1628",
+  "cursoHeroOpacity":      100,
+  "cursoPrimary":          "#00CBC9",
+  "cursoPrimaryOpacity":   100,
+  "cursoSecondary":        "#A36DFF",
+  "cursoSecondaryOpacity": 100,
+  "cursoRadius":           14,
+  "cursoFontPrimary":      "Poppins",
+  "cursoHeading":          "#E6EEF8",
+  "cursoHeadingOpacity":   100,
+  "cursoFontSecondary":    "Roboto",
+  "cursoBody":             "#E6EEF8",
+  "cursoBodyOpacity":      80,
+  "cursoFontDeco":         "JetBrains Mono",
+  "cursoCaption":          "#E6EEF8",
+  "cursoCaptionOpacity":   55,
+  "tempero":               true,
+  "gridIntensity":         "normal",
+  "mercadoLightSpeed":     "normal",
+  "mercadoLightIntensity": "medium",
+  "mercadoLightWidth":     2,
+  "dotGap":                32,
+  "dotSize":               1.5
 }/*EDITMODE-END*/;
 
-function FontRow({ label, fontValue, colorValue, onFont, onColor }) {
+// Row: font selector + color picker stacked
+function FontRow({ label, fontValue, hex, opacity, onFont, onHex, onOpacity }) {
   return (
-    <div className="twk-row twk-row-h">
-      <div className="twk-lbl" style={{ minWidth: 72 }}><span>{label}</span></div>
-      <div style={{ display: 'flex', gap: 4, flex: 1, minWidth: 0 }}>
-        <input type="color" className="twk-swatch"
-               value={colorValue} onChange={(e) => onColor(e.target.value)}
-               style={{ width: 24, flexShrink: 0 }} />
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+      <div className="twk-row twk-row-h">
+        <div className="twk-lbl" style={{ minWidth: 80 }}><span>{label}</span></div>
         <select className="twk-field" value={fontValue}
                 onChange={(e) => onFont(e.target.value)}
                 style={{ flex: 1, minWidth: 0 }}>
           {FONTS_OPTIONS.map(f => <option key={f} value={f}>{f}</option>)}
         </select>
       </div>
+      <ColorPicker label="" hex={hex} opacity={opacity} onHex={onHex} onOpacity={onOpacity} />
     </div>
   );
-}
-
-function applyHudDensity(value) {
-  const root = document.documentElement;
-  if (value === 'minimal') {
-    root.style.setProperty('--hud-display-secondary', 'none');
-    root.style.setProperty('--hud-opacity', '0.55');
-  } else if (value === 'dense') {
-    root.style.setProperty('--hud-display-secondary', 'inline-flex');
-    root.style.setProperty('--hud-opacity', '0.9');
-  } else {
-    root.style.setProperty('--hud-display-secondary', 'inline-flex');
-    root.style.setProperty('--hud-opacity', '1');
-  }
 }
 
 function App() {
   const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
 
-  React.useEffect(() => { applyHudDensity(t.hudDensity); }, [t.hudDensity]);
-
+  // ── MBA DS ──────────────────────────────────────────────────────────
   React.useEffect(() => {
     const r = document.documentElement;
-    r.style.setProperty('--color-bg',                  t.mbaBg);
-    r.style.setProperty('--color-surface',             t.mbaSurface);
-    r.style.setProperty('--color-deep',                t.mbaDeep);
-    r.style.setProperty('--mba-color',                 t.mbaAccent);
-    const brandRgb = hexToRgbChannels(t.mbaAccent);
+    r.style.setProperty('--mba-color-bg',      hexToRgba(t.mbaBg,      t.mbaBgOpacity));
+    r.style.setProperty('--mba-color-surface',  hexToRgba(t.mbaSurface,  t.mbaSurfaceOpacity));
+    r.style.setProperty('--mba-color-primary',  hexToRgba(t.mbaPrimary,  t.mbaPrimaryOpacity));
+    r.style.setProperty('--mba-color-heading',  hexToRgba(t.mbaHeading,  t.mbaHeadingOpacity));
+    r.style.setProperty('--mba-color-body',     hexToRgba(t.mbaBody,     t.mbaBodyOpacity));
+    r.style.setProperty('--mba-color-caption',  hexToRgba(t.mbaCaption,  t.mbaCaptionOpacity));
+    // legacy / cascade roots
+    r.style.setProperty('--color-bg',      hexToRgba(t.mbaBg,     t.mbaBgOpacity));
+    r.style.setProperty('--color-surface',  hexToRgba(t.mbaSurface, t.mbaSurfaceOpacity));
+    r.style.setProperty('--mba-color',      hexToRgba(t.mbaPrimary, t.mbaPrimaryOpacity));
+    r.style.setProperty('--color-brand',    hexToRgba(t.mbaPrimary, t.mbaPrimaryOpacity));
+    const brandRgb = hexToRgbChannels(t.mbaPrimary);
     if (brandRgb) r.style.setProperty('--color-brand-rgb', brandRgb);
-    const deepRgb = hexToRgbChannels(t.mbaDeep);
-    if (deepRgb) r.style.setProperty('--color-deep-rgb', deepRgb);
-    r.style.setProperty('--mba-font-primary',          FONT_STACKS[t.mbaFontPrimary]   || t.mbaFontPrimary);
-    r.style.setProperty('--mba-font-primary-color',    t.mbaFontPrimaryColor);
-    r.style.setProperty('--mba-font-secondary',        FONT_STACKS[t.mbaFontSecondary] || t.mbaFontSecondary);
-    r.style.setProperty('--mba-font-secondary-color',  t.mbaFontSecondaryColor);
-    r.style.setProperty('--mba-font-deco',             FONT_STACKS[t.mbaFontDeco]      || t.mbaFontDeco);
-    r.style.setProperty('--mba-font-deco-color',       t.mbaFontDecoColor);
-  }, [t.mbaBg, t.mbaSurface, t.mbaDeep, t.mbaAccent,
-      t.mbaFontPrimary, t.mbaFontPrimaryColor,
-      t.mbaFontSecondary, t.mbaFontSecondaryColor,
-      t.mbaFontDeco, t.mbaFontDecoColor]);
+    r.style.setProperty('--mba-font-primary',   FONT_STACKS[t.mbaFontPrimary]   || t.mbaFontPrimary);
+    r.style.setProperty('--mba-font-secondary', FONT_STACKS[t.mbaFontSecondary] || t.mbaFontSecondary);
+    r.style.setProperty('--mba-font-deco',      FONT_STACKS[t.mbaFontDeco]      || t.mbaFontDeco);
+  }, [t.mbaBg, t.mbaBgOpacity, t.mbaSurface, t.mbaSurfaceOpacity,
+      t.mbaPrimary, t.mbaPrimaryOpacity,
+      t.mbaHeading, t.mbaHeadingOpacity,
+      t.mbaBody, t.mbaBodyOpacity,
+      t.mbaCaption, t.mbaCaptionOpacity,
+      t.mbaFontPrimary, t.mbaFontSecondary, t.mbaFontDeco]);
 
   React.useEffect(() => {
     const r = document.documentElement;
@@ -130,24 +130,45 @@ function App() {
     r.style.setProperty('--radius-2xl', `${Math.round(24 * scale)}px`);
   }, [t.mbaRadius]);
 
+  // ── Curso DS ────────────────────────────────────────────────────────
   React.useEffect(() => {
     const r = document.documentElement;
-    r.style.setProperty('--curso-bg',                   t.cursoBg);
-    r.style.setProperty('--curso-surface',              t.cursoSurface);
-    r.style.setProperty('--curso-deep',                 t.cursoDeep);
-    r.style.setProperty('--curso-color',                t.cursoAccent);
-    const primaryRgb = hexToRgbChannels(t.cursoAccent);
+    r.style.setProperty('--curso-color-bg',        hexToRgba(t.cursoBg,        t.cursoBgOpacity));
+    r.style.setProperty('--curso-color-surface',    hexToRgba(t.cursoSurface,    t.cursoSurfaceOpacity));
+    r.style.setProperty('--curso-color-hero',       hexToRgba(t.cursoHero,       t.cursoHeroOpacity));
+    r.style.setProperty('--curso-color-primary',    hexToRgba(t.cursoPrimary,    t.cursoPrimaryOpacity));
+    r.style.setProperty('--curso-color-secondary',  hexToRgba(t.cursoSecondary,  t.cursoSecondaryOpacity));
+    r.style.setProperty('--curso-color-heading',    hexToRgba(t.cursoHeading,    t.cursoHeadingOpacity));
+    r.style.setProperty('--curso-color-body',       hexToRgba(t.cursoBody,       t.cursoBodyOpacity));
+    r.style.setProperty('--curso-color-caption',    hexToRgba(t.cursoCaption,    t.cursoCaptionOpacity));
+    // legacy
+    r.style.setProperty('--color-deep',   hexToRgba(t.cursoHero, t.cursoHeroOpacity));
+    r.style.setProperty('--color-deep-2', hexToRgba(t.cursoBg,   t.cursoBgOpacity));
+    r.style.setProperty('--curso-color',  hexToRgba(t.cursoPrimary, t.cursoPrimaryOpacity));
+    r.style.setProperty('--color-primary',hexToRgba(t.cursoPrimary, t.cursoPrimaryOpacity));
+    const primaryRgb = hexToRgbChannels(t.cursoPrimary);
     if (primaryRgb) r.style.setProperty('--color-primary-rgb', primaryRgb);
-    r.style.setProperty('--curso-font-primary',         FONT_STACKS[t.cursoFontPrimary]   || t.cursoFontPrimary);
-    r.style.setProperty('--curso-font-primary-color',   t.cursoFontPrimaryColor);
-    r.style.setProperty('--curso-font-secondary',       FONT_STACKS[t.cursoFontSecondary] || t.cursoFontSecondary);
-    r.style.setProperty('--curso-font-secondary-color', t.cursoFontSecondaryColor);
-    r.style.setProperty('--curso-font-deco',            FONT_STACKS[t.cursoFontDeco]      || t.cursoFontDeco);
-    r.style.setProperty('--curso-font-deco-color',      t.cursoFontDecoColor);
-  }, [t.cursoBg, t.cursoSurface, t.cursoDeep, t.cursoAccent,
-      t.cursoFontPrimary, t.cursoFontPrimaryColor,
-      t.cursoFontSecondary, t.cursoFontSecondaryColor,
-      t.cursoFontDeco, t.cursoFontDecoColor]);
+    // secondary → accent global
+    r.style.setProperty('--color-accent', hexToRgba(t.cursoSecondary, t.cursoSecondaryOpacity));
+    const secRgb = hexToRgbChannels(t.cursoSecondary);
+    if (secRgb) {
+      r.style.setProperty('--color-accent-rgb',      secRgb);
+      r.style.setProperty('--color-accent-soft-rgb', secRgb);
+      r.style.setProperty('--curso-color-secondary-rgb', secRgb);
+    }
+    const deepRgb = hexToRgbChannels(t.cursoHero);
+    if (deepRgb) r.style.setProperty('--color-deep-rgb', deepRgb);
+    r.style.setProperty('--curso-font-primary',   FONT_STACKS[t.cursoFontPrimary]   || t.cursoFontPrimary);
+    r.style.setProperty('--curso-font-secondary', FONT_STACKS[t.cursoFontSecondary] || t.cursoFontSecondary);
+    r.style.setProperty('--curso-font-deco',      FONT_STACKS[t.cursoFontDeco]      || t.cursoFontDeco);
+  }, [t.cursoBg, t.cursoBgOpacity, t.cursoSurface, t.cursoSurfaceOpacity,
+      t.cursoHero, t.cursoHeroOpacity,
+      t.cursoPrimary, t.cursoPrimaryOpacity,
+      t.cursoSecondary, t.cursoSecondaryOpacity,
+      t.cursoHeading, t.cursoHeadingOpacity,
+      t.cursoBody, t.cursoBodyOpacity,
+      t.cursoCaption, t.cursoCaptionOpacity,
+      t.cursoFontPrimary, t.cursoFontSecondary, t.cursoFontDeco]);
 
   React.useEffect(() => {
     const r = document.documentElement;
@@ -177,10 +198,6 @@ function App() {
     document.documentElement.style.setProperty('--mercado-light-width', `${t.mercadoLightWidth}px`);
   }, [t.mercadoLightWidth]);
 
-  React.useEffect(() => {
-    document.documentElement.style.setProperty('--hud-micro-opacity', `${t.hudMicroOpacity / 100}`);
-  }, [t.hudMicroOpacity]);
-
   return (
     <>
       <Header />
@@ -203,31 +220,33 @@ function App() {
             label: 'MBA USP Esalq',
             content: (
               <>
-                <TweakSection label="Colors" />
-                <TweakColorInput label="Background" value={t.mbaBg}
-                  onChange={(v) => setTweak('mbaBg', v)} />
-                <TweakColorInput label="Surface"    value={t.mbaSurface}
-                  onChange={(v) => setTweak('mbaSurface', v)} />
-                <TweakColorInput label="Deep"       value={t.mbaDeep}
-                  onChange={(v) => setTweak('mbaDeep', v)} />
-                <TweakColorInput label="Accent"     value={t.mbaAccent}
-                  onChange={(v) => setTweak('mbaAccent', v)} />
-                <TweakSection label="Typography" />
-                <TweakSlider label="Radius" value={t.mbaRadius}
+                <TweakSection label="Cores" />
+                <ColorPicker label="Background" hex={t.mbaBg}      opacity={t.mbaBgOpacity}
+                  onHex={v => setTweak('mbaBg', v)}          onOpacity={v => setTweak('mbaBgOpacity', v)} />
+                <ColorPicker label="Surface"    hex={t.mbaSurface}  opacity={t.mbaSurfaceOpacity}
+                  onHex={v => setTweak('mbaSurface', v)}     onOpacity={v => setTweak('mbaSurfaceOpacity', v)} />
+                <ColorPicker label="Primary"    hex={t.mbaPrimary}  opacity={t.mbaPrimaryOpacity}
+                  onHex={v => setTweak('mbaPrimary', v)}     onOpacity={v => setTweak('mbaPrimaryOpacity', v)} />
+                <TweakSection label="Tipografia" />
+                <FontRow label="Heading"
+                  fontValue={t.mbaFontPrimary}  hex={t.mbaHeading}  opacity={t.mbaHeadingOpacity}
+                  onFont={v => setTweak('mbaFontPrimary', v)}
+                  onHex={v => setTweak('mbaHeading', v)}
+                  onOpacity={v => setTweak('mbaHeadingOpacity', v)} />
+                <FontRow label="Body"
+                  fontValue={t.mbaFontSecondary} hex={t.mbaBody}    opacity={t.mbaBodyOpacity}
+                  onFont={v => setTweak('mbaFontSecondary', v)}
+                  onHex={v => setTweak('mbaBody', v)}
+                  onOpacity={v => setTweak('mbaBodyOpacity', v)} />
+                <FontRow label="Caption"
+                  fontValue={t.mbaFontDeco}      hex={t.mbaCaption} opacity={t.mbaCaptionOpacity}
+                  onFont={v => setTweak('mbaFontDeco', v)}
+                  onHex={v => setTweak('mbaCaption', v)}
+                  onOpacity={v => setTweak('mbaCaptionOpacity', v)} />
+                <TweakSection label="Forma" />
+                <TweakSlider label="Raio" value={t.mbaRadius}
                   min={4} max={28} step={2} unit="px"
                   onChange={(v) => setTweak('mbaRadius', v)} />
-                <FontRow label="Primary"
-                  fontValue={t.mbaFontPrimary}   colorValue={t.mbaFontPrimaryColor}
-                  onFont={(v) => setTweak('mbaFontPrimary', v)}
-                  onColor={(v) => setTweak('mbaFontPrimaryColor', v)} />
-                <FontRow label="Secondary"
-                  fontValue={t.mbaFontSecondary}  colorValue={t.mbaFontSecondaryColor}
-                  onFont={(v) => setTweak('mbaFontSecondary', v)}
-                  onColor={(v) => setTweak('mbaFontSecondaryColor', v)} />
-                <FontRow label="Deco"
-                  fontValue={t.mbaFontDeco}        colorValue={t.mbaFontDecoColor}
-                  onFont={(v) => setTweak('mbaFontDeco', v)}
-                  onColor={(v) => setTweak('mbaFontDecoColor', v)} />
               </>
             ),
           },
@@ -235,32 +254,38 @@ function App() {
             label: 'Curso',
             content: (
               <>
-                <TweakSection label="Colors" />
-                <TweakColorInput label="Background" value={t.cursoBg}
-                  onChange={(v) => setTweak('cursoBg', v)} />
-                <TweakColorInput label="Surface"    value={t.cursoSurface}
-                  onChange={(v) => setTweak('cursoSurface', v)} />
-                <TweakColorInput label="Deep"       value={t.cursoDeep}
-                  onChange={(v) => setTweak('cursoDeep', v)} />
-                <TweakColorInput label="Accent"     value={t.cursoAccent}
-                  onChange={(v) => setTweak('cursoAccent', v)} />
-                <TweakSection label="Typography" />
-                <TweakSlider label="Radius" value={t.cursoRadius}
+                <TweakSection label="Cores" />
+                <ColorPicker label="Background" hex={t.cursoBg}        opacity={t.cursoBgOpacity}
+                  onHex={v => setTweak('cursoBg', v)}          onOpacity={v => setTweak('cursoBgOpacity', v)} />
+                <ColorPicker label="Surface"    hex={t.cursoSurface}    opacity={t.cursoSurfaceOpacity}
+                  onHex={v => setTweak('cursoSurface', v)}     onOpacity={v => setTweak('cursoSurfaceOpacity', v)} />
+                <ColorPicker label="Hero"       hex={t.cursoHero}       opacity={t.cursoHeroOpacity}
+                  onHex={v => setTweak('cursoHero', v)}        onOpacity={v => setTweak('cursoHeroOpacity', v)} />
+                <ColorPicker label="Primary"    hex={t.cursoPrimary}    opacity={t.cursoPrimaryOpacity}
+                  onHex={v => setTweak('cursoPrimary', v)}     onOpacity={v => setTweak('cursoPrimaryOpacity', v)} />
+                <ColorPicker label="Secondary"  hex={t.cursoSecondary}  opacity={t.cursoSecondaryOpacity}
+                  onHex={v => setTweak('cursoSecondary', v)}   onOpacity={v => setTweak('cursoSecondaryOpacity', v)} />
+                <TweakSection label="Tipografia" />
+                <FontRow label="Heading"
+                  fontValue={t.cursoFontPrimary}  hex={t.cursoHeading}  opacity={t.cursoHeadingOpacity}
+                  onFont={v => setTweak('cursoFontPrimary', v)}
+                  onHex={v => setTweak('cursoHeading', v)}
+                  onOpacity={v => setTweak('cursoHeadingOpacity', v)} />
+                <FontRow label="Body"
+                  fontValue={t.cursoFontSecondary} hex={t.cursoBody}    opacity={t.cursoBodyOpacity}
+                  onFont={v => setTweak('cursoFontSecondary', v)}
+                  onHex={v => setTweak('cursoBody', v)}
+                  onOpacity={v => setTweak('cursoBodyOpacity', v)} />
+                <FontRow label="Caption"
+                  fontValue={t.cursoFontDeco}      hex={t.cursoCaption} opacity={t.cursoCaptionOpacity}
+                  onFont={v => setTweak('cursoFontDeco', v)}
+                  onHex={v => setTweak('cursoCaption', v)}
+                  onOpacity={v => setTweak('cursoCaptionOpacity', v)} />
+                <TweakSection label="Forma" />
+                <TweakSlider label="Raio" value={t.cursoRadius}
                   min={4} max={28} step={2} unit="px"
                   onChange={(v) => setTweak('cursoRadius', v)} />
-                <FontRow label="Primary"
-                  fontValue={t.cursoFontPrimary}   colorValue={t.cursoFontPrimaryColor}
-                  onFont={(v) => setTweak('cursoFontPrimary', v)}
-                  onColor={(v) => setTweak('cursoFontPrimaryColor', v)} />
-                <FontRow label="Secondary"
-                  fontValue={t.cursoFontSecondary}  colorValue={t.cursoFontSecondaryColor}
-                  onFont={(v) => setTweak('cursoFontSecondary', v)}
-                  onColor={(v) => setTweak('cursoFontSecondaryColor', v)} />
-                <FontRow label="Deco"
-                  fontValue={t.cursoFontDeco}        colorValue={t.cursoFontDecoColor}
-                  onFont={(v) => setTweak('cursoFontDeco', v)}
-                  onColor={(v) => setTweak('cursoFontDecoColor', v)} />
-                <TweakSection label="Visual Effects" />
+                <TweakSection label="Efeitos Visuais" />
                 <TweakToggle label="Tempero" value={t.tempero}
                   onChange={(v) => setTweak('tempero', v)} />
                 {t.tempero && (
@@ -273,16 +298,6 @@ function App() {
                         { value: 'normal', label: 'Normal' },
                         { value: 'strong', label: 'Strong' },
                       ]} />
-                    <TweakRadio label="HUD" value={t.hudDensity}
-                      onChange={(v) => setTweak('hudDensity', v)}
-                      options={[
-                        { value: 'minimal',    label: 'Min' },
-                        { value: 'calibrated', label: 'Calib' },
-                        { value: 'dense',      label: 'Dense' },
-                      ]} />
-                    <TweakSlider label="Micro HUD" value={t.hudMicroOpacity}
-                      min={0} max={100} step={5} unit="%"
-                      onChange={(v) => setTweak('hudMicroOpacity', v)} />
                     <TweakSelect label="Luz cards" value={t.mercadoLightSpeed}
                       onChange={(v) => setTweak('mercadoLightSpeed', v)}
                       options={[
@@ -317,24 +332,12 @@ function App() {
   );
 }
 
-/* ── HUD density + tempero visibility ── */
-(function injectHudDensityCSS() {
-  if (document.getElementById('cy-hud-density-css')) return;
+/* ── tempero visibility ── */
+(function injectTemperoCSS() {
+  if (document.getElementById('cy-tempero-css')) return;
   const s = document.createElement('style');
-  s.id = 'cy-hud-density-css';
-  s.textContent = `
-    :root {
-      --hud-display-secondary: inline-flex;
-      --hud-opacity: 1;
-    }
-    .hud, .hud-serial, .hud-coords, .hud-binary, .hud-ts {
-      opacity: var(--hud-opacity, 1);
-    }
-    [data-hud-density="minimal"] .hud-coords,
-    [data-hud-density="minimal"] .hud-binary,
-    [data-hud-density="minimal"] .hud-ts { display: none; }
-    [data-tempero="off"] .hud-overlay { display: none; }
-  `;
+  s.id = 'cy-tempero-css';
+  s.textContent = `[data-tempero="off"] .hud-overlay { display: none; }`;
   document.head.appendChild(s);
 })();
 
@@ -345,20 +348,17 @@ function App() {
   s.id = 'cy-curso-tokens-css';
   s.textContent = `
     :root {
-      --curso-bg:       #FAFAFA;
-      --curso-surface:  #FFFFFF;
-      --curso-deep:     #0A1628;
-      --curso-radius-sm: 6px;
-      --curso-radius-md: 10px;
-      --curso-radius-lg: 14px;
-      --curso-radius-xl: 18px;
-      --curso-radius-2xl: 24px;
+      --curso-color-bg:        #0F1F38;
+      --curso-color-surface:   rgba(255,255,255,0.06);
+      --curso-color-hero:      #0A1628;
+      --curso-color-secondary: #7C3AED;
+      --curso-color-secondary-rgb: 124, 58, 237;
+      --curso-radius-sm: 6px; --curso-radius-md: 10px; --curso-radius-lg: 14px;
+      --curso-radius-xl: 18px; --curso-radius-2xl: 24px;
     }
     .section-deep {
-      --color-bg:      var(--curso-bg);
-      --color-surface: var(--curso-surface);
-      --color-deep:    var(--curso-deep);
-      --color-accent:  var(--curso-color);
+      --color-surface: var(--curso-color-surface);
+      --color-accent:  var(--curso-color-secondary);
       --radius-sm: var(--curso-radius-sm);
       --radius-md: var(--curso-radius-md);
       --radius-lg: var(--curso-radius-lg);

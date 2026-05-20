@@ -1,6 +1,52 @@
 
 // tweaks-panel.jsx
 // Reusable Tweaks shell + form-control helpers.
+
+// ── Color utilities ─────────────────────────────────────────────────────────
+function hexToHsv(hex) {
+  const h = String(hex).replace('#', '');
+  const x = h.length === 3 ? h.replace(/./g, c => c + c) : h.padEnd(6, '0');
+  const n = parseInt(x.slice(0, 6), 16);
+  if (isNaN(n)) return { h: 0, s: 0, v: 1 };
+  const r = (n >> 16) / 255, g = ((n >> 8) & 255) / 255, b = (n & 255) / 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+  const v = max, s = max === 0 ? 0 : d / max;
+  let hh = 0;
+  if (d !== 0) {
+    if (max === r) hh = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+    else if (max === g) hh = ((b - r) / d + 2) / 6;
+    else hh = ((r - g) / d + 4) / 6;
+  }
+  return { h: hh * 360, s, v };
+}
+
+function hsvToHex(h, s, v) {
+  const i = Math.floor(h / 60) % 6;
+  const f = h / 60 - Math.floor(h / 60);
+  const p = v * (1 - s), q = v * (1 - f * s), t = v * (1 - (1 - f) * s);
+  const ch = [[v, t, p], [q, v, p], [p, v, t], [p, q, v], [t, p, v], [v, p, q]][i];
+  return '#' + ch.map(c => Math.round(c * 255).toString(16).padStart(2, '0')).join('');
+}
+
+function hexToRgba(hex, alpha) {
+  const h = String(hex).replace('#', '');
+  const x = h.length === 3 ? h.replace(/./g, c => c + c) : h.padEnd(6, '0');
+  const n = parseInt(x.slice(0, 6), 16);
+  if (isNaN(n)) return hex;
+  const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  const a = typeof alpha === 'number' ? +(alpha / 100).toFixed(3) : 1;
+  return a >= 1 ? `rgb(${r},${g},${b})` : `rgba(${r},${g},${b},${a})`;
+}
+
+function hexToRgbStr(hex) {
+  const h = String(hex).replace('#', '');
+  const x = h.length === 3 ? h.replace(/./g, c => c + c) : h.padEnd(6, '0');
+  const n = parseInt(x.slice(0, 6), 16);
+  if (isNaN(n)) return null;
+  return `${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}`;
+}
+
+Object.assign(window, { hexToHsv, hsvToHex, hexToRgba, hexToRgbStr });
 //
 // Owns the host protocol (listens for __activate_edit_mode / __deactivate_edit_mode,
 // posts __edit_mode_available / __edit_mode_set_keys / __edit_mode_dismissed) so
@@ -167,6 +213,47 @@ const __TWEAKS_STYLE = `
     border:2px solid transparent;background-clip:content-box}
   .twk-tab-body::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.25);
     border:2px solid transparent;background-clip:content-box}
+
+  /* ── Color Picker ─────────────────────────────────────────────────── */
+  .twk-cp-swatch{width:28px;height:22px;flex-shrink:0;
+    border:.5px solid rgba(0,0,0,.18);border-radius:5px;cursor:pointer;padding:0}
+  .twk-cp-opct{font-size:10px;color:rgba(41,38,27,.45);
+    font-variant-numeric:tabular-nums;white-space:nowrap;flex-shrink:0;min-width:30px;text-align:right}
+  .twk-cp-popup{position:fixed;z-index:2147483647;width:220px;
+    background:rgba(250,249,247,.99);color:#29261b;
+    border:.5px solid rgba(0,0,0,.15);border-radius:10px;
+    box-shadow:0 8px 32px rgba(0,0,0,.2);padding:10px;
+    display:flex;flex-direction:column;gap:8px}
+  .twk-cp-sv{position:relative;width:100%;height:136px;border-radius:5px;
+    overflow:hidden;cursor:crosshair;flex-shrink:0;touch-action:none}
+  .twk-cp-cursor{position:absolute;width:10px;height:10px;border-radius:50%;
+    border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.28),0 1px 4px rgba(0,0,0,.28);
+    transform:translate(-50%,-50%);pointer-events:none}
+  .twk-cp-sliders{display:flex;flex-direction:column;gap:6px}
+  .twk-cp-hue{appearance:none;-webkit-appearance:none;width:100%;height:10px;border-radius:5px;
+    background:linear-gradient(to right,#f00 0%,#ff0 17%,#0f0 33%,#0ff 50%,#00f 67%,#f0f 83%,#f00 100%);
+    outline:none;cursor:pointer;margin:0}
+  .twk-cp-hue::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;
+    background:#fff;border:.5px solid rgba(0,0,0,.22);box-shadow:0 1px 3px rgba(0,0,0,.25);cursor:default}
+  .twk-cp-hue::-moz-range-thumb{width:14px;height:14px;border-radius:50%;border:.5px solid rgba(0,0,0,.22);
+    background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);cursor:default}
+  .twk-cp-alpha-wrap{position:relative;height:10px;border-radius:5px;overflow:hidden;
+    background-image:conic-gradient(rgba(0,0,0,.12) 25%,transparent 25%,transparent 75%,rgba(0,0,0,.12) 75%);
+    background-size:8px 8px}
+  .twk-cp-alpha-bg{position:absolute;inset:0;border-radius:5px}
+  .twk-cp-alpha{position:absolute;inset:0;appearance:none;-webkit-appearance:none;
+    width:100%;height:100%;background:transparent;outline:none;cursor:pointer;margin:0}
+  .twk-cp-alpha::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;
+    background:#fff;border:.5px solid rgba(0,0,0,.22);box-shadow:0 1px 3px rgba(0,0,0,.25);cursor:default}
+  .twk-cp-alpha::-moz-range-thumb{width:14px;height:14px;border-radius:50%;border:.5px solid rgba(0,0,0,.22);
+    background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);cursor:default}
+  .twk-cp-foot{display:flex;align-items:center;gap:6px}
+  .twk-cp-preview{width:22px;height:22px;flex-shrink:0;border-radius:4px;
+    border:.5px solid rgba(0,0,0,.1);background-image:conic-gradient(rgba(0,0,0,.1) 25%,transparent 25%,transparent 75%,rgba(0,0,0,.1) 75%);
+    background-size:6px 6px}
+  .twk-cp-preview-inner{width:100%;height:100%;border-radius:3.5px}
+  .twk-cp-pct{font-size:11px;color:rgba(41,38,27,.45);min-width:32px;text-align:right;
+    font-variant-numeric:tabular-nums;flex-shrink:0}
 `;
 
 // ── useTweaks ───────────────────────────────────────────────────────────────
@@ -477,6 +564,144 @@ function TweakColor({ label, value, options, onChange }) {
   );
 }
 
+// ── ColorPicker ─────────────────────────────────────────────────────────────
+// Custom color picker: SV square + hue slider + alpha slider + hex input.
+// Uses position:fixed for the popup to escape overflow:hidden parents.
+function ColorPicker({ label, hex, opacity, onHex, onOpacity }) {
+  const safeHex = /^#[0-9a-fA-F]{6}$/i.test(hex) ? hex : '#000000';
+  const [open, setOpen] = React.useState(false);
+  const [hsv, setHsv] = React.useState(() => hexToHsv(safeHex));
+  const [draft, setDraft] = React.useState(safeHex.toUpperCase());
+  const [pos, setPos] = React.useState({ top: 0, right: 0 });
+  const rowRef = React.useRef(null);
+  const svRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (/^#[0-9a-fA-F]{6}$/i.test(hex)) {
+      setHsv(hexToHsv(hex));
+      setDraft(hex.toUpperCase());
+    }
+  }, [hex]);
+
+  React.useEffect(() => {
+    if (!open) return;
+    const handler = e => {
+      if (!rowRef.current?.contains(e.target) &&
+          !document.querySelector('.twk-cp-popup')?.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [open]);
+
+  const commit = (h, s, v) => {
+    const newHex = hsvToHex(h, s, v);
+    setHsv({ h, s, v });
+    setDraft(newHex.toUpperCase());
+    onHex(newHex);
+  };
+
+  const handleSv = e => {
+    if (!svRef.current) return;
+    const r = svRef.current.getBoundingClientRect();
+    const s = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+    const v = Math.max(0, Math.min(1, 1 - (e.clientY - r.top) / r.height));
+    commit(hsv.h, s, v);
+  };
+
+  const onSvDown = e => {
+    e.preventDefault();
+    handleSv(e);
+    const move = ev => handleSv(ev);
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+
+  const handleHexInput = val => {
+    const norm = val.startsWith('#') ? val : '#' + val;
+    setDraft(val.toUpperCase());
+    if (/^#[0-9a-fA-F]{6}$/.test(norm)) {
+      setHsv(hexToHsv(norm));
+      onHex(norm);
+    }
+  };
+
+  const openPicker = () => {
+    if (rowRef.current) {
+      const rect = rowRef.current.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const p = { right: Math.max(0, window.innerWidth - rect.right) };
+      if (spaceBelow >= 264) p.top = rect.bottom + 4;
+      else p.bottom = window.innerHeight - rect.top + 4;
+      setPos(p);
+    }
+    setOpen(o => !o);
+  };
+
+  const hueColor = hsvToHex(hsv.h, 1, 1);
+  const previewColor = hexToRgba(safeHex, opacity);
+  const rgbStr = hexToRgbStr(safeHex);
+  const alphaGrad = rgbStr
+    ? `linear-gradient(to right, rgba(${rgbStr},0), rgba(${rgbStr},1))`
+    : '';
+  const opInt = Math.round(opacity);
+
+  return (
+    <>
+      <div className="twk-row twk-row-h" ref={rowRef}>
+        {label != null && label !== '' &&
+          <div className="twk-lbl" style={{ minWidth: 80 }}><span>{label}</span></div>}
+        <div style={{ display: 'flex', gap: 4, flex: 1, alignItems: 'center', minWidth: 0 }}>
+          <button type="button" className="twk-cp-swatch"
+                  style={{ background: previewColor }}
+                  onClick={openPicker}
+                  title={`${safeHex.toUpperCase()} / ${opInt}%`} />
+          <input type="text" className="twk-field"
+                 value={draft}
+                 onChange={e => handleHexInput(e.target.value)}
+                 style={{ flex: 1, minWidth: 0, fontFamily: 'monospace', fontSize: 11 }} />
+          <span className="twk-cp-opct">{opInt}%</span>
+        </div>
+      </div>
+      {open && (
+        <div className="twk-cp-popup" style={pos}>
+          <div ref={svRef} className="twk-cp-sv" onPointerDown={onSvDown}
+               style={{ background: `linear-gradient(to top,#000,transparent),linear-gradient(to right,#fff,${hueColor})` }}>
+            <div className="twk-cp-cursor"
+                 style={{ left: `${hsv.s * 100}%`, top: `${(1 - hsv.v) * 100}%` }} />
+          </div>
+          <div className="twk-cp-sliders">
+            <input type="range" className="twk-cp-hue" min={0} max={359} step={1}
+                   value={Math.round(hsv.h)}
+                   onChange={e => commit(Number(e.target.value), hsv.s, hsv.v)} />
+            <div className="twk-cp-alpha-wrap">
+              <div className="twk-cp-alpha-bg" style={{ background: alphaGrad }} />
+              <input type="range" className="twk-cp-alpha" min={0} max={100} step={1}
+                     value={opInt}
+                     onChange={e => onOpacity(Number(e.target.value))} />
+            </div>
+          </div>
+          <div className="twk-cp-foot">
+            <div className="twk-cp-preview">
+              <div className="twk-cp-preview-inner" style={{ background: previewColor }} />
+            </div>
+            <input type="text" className="twk-field"
+                   value={draft}
+                   onChange={e => handleHexInput(e.target.value)}
+                   style={{ flex: 1, fontFamily: 'monospace', fontSize: 11 }} />
+            <span className="twk-cp-pct">{opInt}%</span>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
 function TweakButton({ label, onClick, secondary = false }) {
   return (
     <button type="button" className={secondary ? 'twk-btn secondary' : 'twk-btn'}
@@ -524,4 +749,5 @@ Object.assign(window, {
   useTweaks, TweaksPanel, TweakTabs, TweakSection, TweakRow,
   TweakSlider, TweakToggle, TweakRadio, TweakSelect,
   TweakText, TweakNumber, TweakColor, TweakButton, TweakColorInput,
+  ColorPicker,
 });

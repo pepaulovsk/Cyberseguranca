@@ -72,17 +72,17 @@ function Hero({ gridIntensity = 'off' }) {
               <div>
                 <dt>Salário máx. CSO</dt>
                 <dd>R$ 52k</dd>
-                <span className="hud">Robert Half · 2026</span>
+                <span className="ds-caption-micro">Robert Half · 2026</span>
               </div>
               <div>
                 <dt>Vagas até 2034</dt>
                 <dd>+29%</dd>
-                <span className="hud">BLS · 2024</span>
+                <span className="ds-caption-micro">BLS · 2024</span>
               </div>
               <div>
                 <dt>Déficit BR</dt>
                 <dd>750k</dd>
-                <span className="hud">Fortinet</span>
+                <span className="ds-caption-micro">Fortinet</span>
               </div>
             </dl>
           </RevealOnScroll>
@@ -209,7 +209,7 @@ function Carreira() {
                 <span className="carreira-value">{s.value}</span>
                 <h3 className="carreira-label">{s.label}</h3>
                 <p className="carreira-body">{s.body}</p>
-                <span className="hud carreira-source">{s.source}</span>
+                <span className="ds-caption-micro carreira-source">{s.source}</span>
               </CyCard>
             </RevealOnScroll>
           )}
@@ -219,7 +219,7 @@ function Carreira() {
           <div className="salary-table-wrap">
             <header className="salary-table-head">
               <h3>Faixa Salarial Brasil 2026</h3>
-              <span className="hud">para quem possui pós em cibersegurança · Fonte: Robert Half 2026</span>
+              <span className="ds-caption">para quem possui pós em cibersegurança · Fonte: Robert Half 2026</span>
             </header>
             <div className="salary-table" role="table" aria-label="Faixa salarial Brasil 2026">
               <div className="salary-row salary-row-head" role="row">
@@ -243,8 +243,8 @@ function Carreira() {
             <span className="eyebrow">ROI do MBA</span>
             <p>
               Um profissional que evolui de <strong>Analista Sênior (R$ 11k)</strong> para
-              <strong> Coordenador (R$ 20k)</strong> recupera o investimento total do MBA em
-              <strong> menos de 4 meses</strong> apenas com a diferença salarial. O certificado USP
+              <strong> Coordenador (R$ 20k)</strong> recupera os R$ 13.134 do MBA em
+              <strong> cerca de 3 meses.</strong> O certificado USP
               fortalece essa progressão em processos seletivos.
             </p>
             <CyButton variant="primary" size="md" as="a" href="#cta"
@@ -374,7 +374,7 @@ function CorpoDocente() {
           <RevealOnScroll key={p.name + i} delay={i % 4 * 60}>
               <article className="docente-card">
                 <div className="docente-photo" aria-hidden="true">
-                  <span className="docente-photo-label hud">[PHOTO]</span>
+                  <span className="docente-photo-label ds-caption">[PHOTO]</span>
                 </div>
                 <div className="docente-info">
                   <h3 className="docente-name">{p.name}</h3>
@@ -450,7 +450,7 @@ function Perfil() {
                 <ul className="persona-list">
                   {p.roles.map((r) =>
                 <li key={r}>
-                      <Icon name="Check" size={14} color="var(--color-primary)" />{r}
+                      <Icon name="Check" size={14} color="var(--ds-color-primary)" />{r}
                     </li>
                 )}
                 </ul>
@@ -509,9 +509,9 @@ function Investimento({ tempero = true }) {
   {
     id: 'internacional',
     tag: 'Plano Internacional',
-    price: 'R$597',
+    price: 'R$944,64',
     cadence: '/mês',
-    total: 'Total R$ 10.746 em 18 parcelas',
+    total: 'Total R$ 20.782 em 22 parcelas',
     featured: true,
     items: [
     'Materiais em EN e ES incluídos',
@@ -573,15 +573,15 @@ function Investimento({ tempero = true }) {
                   {plan.featured && <CyBadge tone="primary" dot>Reconhecimento global</CyBadge>}
                 </header>
                 <div className="plan-price">
-                  <span className="plan-price-prefix hud">a partir de</span>
+                  <span className="plan-price-prefix ds-caption">a partir de</span>
                   <span className="plan-price-value">{plan.price}<small>{plan.cadence}</small></span>
-                  <span className="plan-price-total hud">{plan.total}</span>
+                  <span className="plan-price-total ds-caption">{plan.total}</span>
                 </div>
                 <CyButton variant={plan.featured ? 'primary' : 'secondary'} size="md" as="a" href="#cta"
               icon={<Icon name="ArrowRight" size={16} />}>Escolher {plan.tag.split(' ')[1]}</CyButton>
                 <div className="plan-divider" aria-hidden="true" />
                 <div className="plan-features-wrap">
-                  <span className="plan-features-label hud">O plano inclui</span>
+                  <span className="plan-features-label ds-caption">O plano inclui</span>
                   <ul className="plan-features">
                     {plan.items.map((it) =>
                   <li key={it}>
@@ -607,8 +607,8 @@ function Investimento({ tempero = true }) {
             <span className="eyebrow">Cálculo do ROI</span>
             <p>
               Com mensalidades a partir de R$597/mês ao longo de 22 meses, o investimento total é de 
-              <strong>~R$13.134</strong>. Um Analista Sênior promovido a Coordenador com
-              aumento de R$3.000/mês recupera esse valor em <strong>menos de 4 meses</strong>.
+              <strong>~R$13.134</strong>. Um Analista Sênior promovido a Coordenador passa a ganhar
+              a partir de R$5.900/mês. <strong>O investimento se paga em aproximadamente 3 meses</strong>.
             </p>
           </div>
         </RevealOnScroll>
@@ -687,7 +687,7 @@ function FAQItem({ index, question, answer, isOpen, onToggle }) {
     <RevealOnScroll delay={index * 40}>
       <div className={`faq-item ${isOpen ? 'is-open' : ''}`}>
         <button className="faq-q" onClick={onToggle} aria-expanded={isOpen}>
-          <span className="faq-q-num hud">Q.{String(index + 1).padStart(2, '0')}</span>
+          <span className="faq-q-num ds-caption">Q.{String(index + 1).padStart(2, '0')}</span>
           <span className="faq-q-text">{question}</span>
           <span className="faq-q-icon" aria-hidden="true">
             <svg viewBox="0 0 16 16" width="14" height="14">
@@ -756,7 +756,7 @@ function CTA({ dotGap = 22, dotSize = 1.4, showDots = true }) {
           </div>
         </RevealOnScroll>
         <RevealOnScroll delay={320}>
-          <div className="cta-contact hud">
+          <div className="cta-contact ds-caption">
             <span>info@mbauspesalq.com</span>
             <span>·</span>
             <span>Atendimento de seg. a sex., 9h–18h</span>
@@ -784,7 +784,7 @@ function Footer() {
           <a href="#investimento">Investimento</a>
           <a href="#faq">FAQ</a>
         </nav>
-        <div className="lp-footer-meta hud">
+        <div className="lp-footer-meta ds-caption">
           <span>Pós-graduação Lato Sensu</span>
           <span>·</span>
           <span>© 2026</span>

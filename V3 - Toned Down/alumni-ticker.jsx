@@ -148,7 +148,7 @@ function AlumniTicker() {
           <span className="alumni-strip-bar" aria-hidden="true"></span>
           Onde nossos formados trabalham
         </h3>
-        <span className="alumni-strip-meta hud">
+        <span className="alumni-strip-meta ds-caption">
           MBA USP/Esalq · alumni network
         </span>
       </header>
