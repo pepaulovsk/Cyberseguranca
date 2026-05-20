@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Curso de Cybersegurança — LP</title>
+
+  <!-- Google Fonts (todos os pares do ThemePlayground; default = Par A) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600&family=Archivo:wght@500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="sections.css" />
+
+  <!-- ── :root canônico (UI-GUIDELINES §1) ─────────────────────────────── -->
+  <style>
+    :root {
+      /* COLOR */
+      --color-bg: #FAFAFA;
+      --color-surface: #FFFFFF;
+      --color-deep: #0A1628;
+      --color-deep-2: #0F1F38;
+      --color-primary: #00CBC9;
+      --color-accent: #7C3AED;
+      --color-accent-ink: #5B21B6; /* darker para texto sobre claro */
+      --color-accent-soft: #A78BFA; /* mais claro para texto sobre deep */
+      --color-primary-ink: #058281; /* darker para texto sobre claro */
+      --color-text: #0A1628;
+      --color-text-muted: #5A6779;
+      --color-text-on-deep: #E6EEF8;
+      --color-border: #E5E9F0;
+      --color-border-deep: rgba(255, 255, 255, 0.08);
+
+      /* TYPOGRAPHY — Etapa 1: Poppins + Roboto (padrão MBA USP/Esalq) */
+      --font-heading: 'Poppins', system-ui, sans-serif;
+      --font-body: 'Roboto', system-ui, sans-serif;
+      --font-ui: 'Roboto', system-ui, sans-serif;
+
+      /* Etapa 2: escala recalibrada para Poppins (humanista). Reduz teto
+         de display/h1 — JetBrains Mono comportava 72px, Poppins fica
+         cinematográfico nesse tamanho. Mantém hierarquia, baixa massa. */
+      --fs-display: clamp(2.25rem, 4vw + 1rem, 3.75rem);
+      --fs-h1: clamp(1.875rem, 2.5vw + 1rem, 2.5rem);
+      --fs-h2: 1.75rem;
+      --fs-h3: 1.375rem;
+      --fs-h4: 1.125rem;
+      --fs-body-lg: 1.125rem;
+      --fs-body: 1rem;
+      --fs-body-sm: 0.875rem;
+      --fs-caption: 0.75rem;
+      --fs-micro: 0.625rem;
+
+      /* SPACING (grid 4/8) */
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --space-10: 40px;
+      --space-12: 48px;
+      --space-14: 56px;
+      --space-16: 64px;
+      --space-20: 80px;
+      --space-24: 96px;
+      --space-1-5: 6px;
+      --space-2-5: 10px;
+      --space-3-5: 14px;
+
+      /* RADIUS */
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 18px;
+      --radius-2xl: 24px;
+
+      /* MOTION */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --duration-fast: 150ms;
+      --duration-base: 300ms;
+      --duration-slow: 600ms;
+
+      /* LAYOUT */
+      --container-max: 1280px;
+      --container-padding: clamp(16px, 4vw, 48px);
+    }
+
+    /* ── reset enxuto ───────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      font-size: var(--fs-body);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+    h1, h2, h3, h4 {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.005em;
+      margin: 0;
+      text-wrap: balance;
+    }
+    p { margin: 0; text-wrap: pretty; }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; }
+
+    /* ── squircle global onde a propriedade for suportada ──────────── */
+    .card,
+    .btn,
+    .surface,
+    .media,
+    input,
+    textarea,
+    select {
+      corner-shape: squircle;
+    }
+
+    /* ── container ─────────────────────────────────────────────────── */
+    .container {
+      max-width: var(--container-max);
+      margin: 0 auto;
+      padding-left: var(--container-padding);
+      padding-right: var(--container-padding);
+    }
+
+    /* ── seções deep ───────────────────────────────────────────────── */
+    /* Etapa 1: removido o radial glow ciano/roxo dos cantos.
+       Etapa 2: `.section-deep.alt` usa --color-deep-2 para diferenciar
+       seções deep adjacentes (Hero deep + Mercado deep-alt criavam um
+       bloco indistinto após Etapa 1). Diferenciação tonal mínima. */
+    .section-deep {
+      background: var(--color-deep);
+      color: var(--color-text-on-deep);
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+    }
+    .section-deep.alt {
+      background: var(--color-deep-2);
+    }
+    .section-deep > * { position: relative; z-index: 1; }
+
+    /* Etapa 2: gap entre seções reduzido de 96/96 para 80/80 desktop
+       (96+96=192 era folga institucional-demais) e de 64/64 para 56/56
+       em mobile. Cria respiro sem perder densidade. */
+    section.lp-section {
+      padding-top: var(--space-20);
+      padding-bottom: var(--space-20);
+    }
+    @media (max-width: 768px) {
+      section.lp-section {
+        padding-top: var(--space-14);
+        padding-bottom: var(--space-14);
+      }
+    }
+
+    /* ── reveal-on-scroll ─────────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      transition:
+        opacity var(--duration-slow) var(--ease-out),
+        transform var(--duration-slow) var(--ease-out);
+      will-change: opacity, transform;
+    }
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+      .reveal { opacity: 1; transform: none; }
+    }
+
+    /* ── eyebrow / kicker reutilizável ─────────────────────────────── */
+    .eyebrow {
+      font-family: var(--font-ui);
+      font-size: var(--fs-caption);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .eyebrow::before {
+      content: '';
+      width: 24px;
+      height: 1px;
+      background: currentColor;
+    }
+
+    /* ── .hud reutilizado como classe utilitária de meta/fonte ──────
+       Etapa 1: os componentes de HUD decorativo (SerialTag/BinaryStrip/
+       Coordinates/Timestamp) foram retirados das seções. A classe `.hud`
+       continua sendo usada apenas em CITAÇÕES DE FONTE e MICRO-METADATA
+       reais ("Robert Half · 2026", "a partir de", "Total R$ 13.134 em
+       22 parcelas"). Aqui ela vira tipografia secundária neutra — sem
+       monospace, sem pseudo-telemetria. */
+    .hud {
+      font-family: var(--font-ui);
+      font-size: var(--fs-caption);
+      letter-spacing: 0.04em;
+      color: var(--color-text-muted);
+    }
+    .section-deep .hud { color: rgba(230, 238, 248, 0.55); }
+
+    /* ── focus ring ───────────────────────────────────────────────── */
+    :focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 3px;
+      border-radius: var(--radius-sm);
+    }
+
+    /* ── selection ────────────────────────────────────────────────── */
+    /* Etapa 1: selection default do browser. Era ciano sólido. */
+
+    /* ── scrollbar discreta ──────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: var(--color-border);
+      border-radius: 999px;
+    }
+  </style>
+
+  <!-- ── themeBoot inline (anti-flash) ───────────────────────────────── -->
+  <script>
+    (function() {
+      try {
+        var stored = localStorage.getItem('cyber-lp-theme');
+        if (!stored) {
+          var params = new URLSearchParams(window.location.search);
+          var fromUrl = params.get('theme');
+          if (fromUrl && fromUrl !== '1') {
+            try { stored = decodeURIComponent(escape(atob(fromUrl))); } catch(e) {}
+          }
+        }
+        if (!stored) return;
+        var theme = JSON.parse(stored);
+        var root = document.documentElement;
+        if (theme.bg)      root.style.setProperty('--color-bg', theme.bg);
+        if (theme.surface) root.style.setProperty('--color-surface', theme.surface);
+        if (theme.deep)    root.style.setProperty('--color-deep', theme.deep);
+        if (theme.primary) root.style.setProperty('--color-primary', theme.primary);
+        if (theme.accent)  root.style.setProperty('--color-accent', theme.accent);
+        if (theme.radiusLg) {
+          var scale = theme.radiusLg / 14;
+          root.style.setProperty('--radius-sm',  Math.round(6 * scale)  + 'px');
+          root.style.setProperty('--radius-md',  Math.round(10 * scale) + 'px');
+          root.style.setProperty('--radius-lg',  theme.radiusLg + 'px');
+          root.style.setProperty('--radius-xl',  Math.round(18 * scale) + 'px');
+          root.style.setProperty('--radius-2xl', Math.round(24 * scale) + 'px');
+        }
+      } catch(e) {}
+    })();
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- React + Babel -->
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <!-- Order matters: store → icon library → theme playground → primitives → backgrounds/hud/motion → tweaks → sections → app -->
+  <script type="text/babel" src="theme-store.jsx"></script>
+  <script type="text/babel" src="icon.jsx"></script>
+  <script type="text/babel" src="theme-playground.jsx"></script>
+  <script type="text/babel" src="primitives.jsx"></script>
+  <script type="text/babel" src="hud.jsx"></script>
+  <script type="text/babel" src="backgrounds.jsx"></script>
+  <script type="text/babel" src="motion.jsx"></script>
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+  <script type="text/babel" src="alumni-ticker.jsx"></script>
+  <script type="text/babel" src="sections.jsx"></script>
+  <script type="text/babel" src="app.jsx"></script>
+</body>
+</html>
