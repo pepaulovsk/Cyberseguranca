@@ -441,15 +441,39 @@ function Diferenciais({ dotGap = 22, dotSize = 1.4, showDots = true }) {
 \* ────────────────────────────────────────────────────────────────────── */
 
 function CorpoDocente() {
-  // Lorem placeholder — time editorial preenche depois.
-  const profs = [
-  { name: '[PROF. 01]', role: '[Cargo · USP/Esalq]', expertise: 'GenAI Attacks', credential: 'PhD' },
-  { name: '[PROF. 02]', role: '[Cargo · USP/Esalq]', expertise: 'Cloud Security', credential: 'CISSP' },
-  { name: '[PROF. 03]', role: '[Cargo · USP/Esalq]', expertise: 'LGPD & GDPR', credential: 'DPO' },
-  { name: '[PROF. 04]', role: '[Cargo · USP/Esalq]', expertise: 'Pentest', credential: 'OSCP' },
-  { name: '[PROF. 05]', role: '[Cargo · USP/Esalq]', expertise: 'Governança SI', credential: 'ISO 27001' },
-  { name: '[PROF. 06]', role: '[Cargo · USP/Esalq]', expertise: 'Resposta a incidentes', credential: 'CISM' }];
+  const trackRef = React.useRef(null);
 
+  const scroll = (dir) => {
+    const track = trackRef.current;
+    if (!track) return;
+    const card = track.querySelector('.docente-card');
+    const gap = parseFloat(getComputedStyle(track).columnGap) || 20;
+    track.scrollBy({ left: dir * ((card?.offsetWidth ?? 260) + gap), behavior: 'smooth' });
+  };
+
+  const profs = [
+  { name: <>Adriana {/* Cristina Ferreira */} Caldana</>, role: 'Representante brasileira no ExPeG-PRME (ONU) e TEDx Speaker', tag: 'USP · ESALQ' },
+  { name: <>Cristina {/* Godoy Bernardo de */} Oliveira</>, role: 'PI do Centro de IA USP-IBM-Fapesp', tag: 'USP · IBM · Fapesp' },
+  { name: <>Fabiano {/* Guasti */} Lima</>, role: 'Livre-Docente em Métodos Quantitativos e Finanças · Pesquisador Fapesp', tag: 'USP · Fapesp' },
+  { name: <>Felipe {/* Mendes */} Borini</>, role: 'Pesquisador Sênior Glorad · Especialista em Inovação e Ecossistemas Tecnológicos', tag: 'USP · Glorad' },
+  { name: <>Fernando {/* de Souza */} Coelho</>, role: 'Especialista em Políticas Públicas e Governança', tag: 'Gov. Pública' },
+  { name: <>Fábio {/* Miguel */} Junges</>, role: 'CEO da SOU.cloud Serviços Gerenciados', tag: 'Indústria' },
+  { name: <>Jaime {/* Simão */} Sichman</>, role: 'Doutor em Inteligência Artificial · Distinguished Speaker ACM', tag: 'USP · IA' },
+  { name: <>Bruno {/* Antunes */} Kadri</>, role: 'CTO no Pecege · Especialista em Gestão de Produtos, Pessoas e Engenharia de Software', tag: 'Pecege' },
+  { name: 'Daniel Donda', role: 'CEO e fundador da Hackers Hive', tag: 'Indústria' },
+  { name: <>Matheus {/* Borguete de */} Souza</>, role: 'CMO no Pecege · Líder das áreas de Produtos e de Segurança e Governança no Pecege', tag: 'Pecege' }];
+
+
+  const navButtons = (
+    <div className="docentes-nav">
+      <button className="docente-nav-btn" onClick={() => scroll(-1)} aria-label="Anterior">
+        <Icon name="ChevronLeft" size={20} />
+      </button>
+      <button className="docente-nav-btn" onClick={() => scroll(1)} aria-label="Próximo">
+        <Icon name="ChevronRight" size={20} />
+      </button>
+    </div>
+  );
 
   return (
     <section className="lp-section section-light dot-bg" id="docentes">
@@ -457,43 +481,49 @@ function CorpoDocente() {
       <div className="container">
         <SectionHeader
           eyebrow="05 · Corpo docente"
-          title={<>Professores doutores USP<br /><span className="muted">+ especialistas do mercado</span></>} />
-        
+          title={<>Professores doutores USP<br /><span className="muted">+ especialistas do mercado</span></>}
+          right={navButtons} />
+      </div>
 
-        <RevealOnScroll>
-          <p className="section-lead">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Conteúdo do corpo docente a ser
-            preenchido pelo time editorial — perfis completos, formação, publicações.
-          </p>
-        </RevealOnScroll>
-
-        <div className="docentes-grid">
+      <div className="docentes-scroll-wrap">
+        <div className="docentes-track" ref={trackRef}>
           {profs.map((p, i) =>
-          <RevealOnScroll key={p.name + i} delay={i % 4 * 60}>
-              <article className="docente-card">
-                <div className="docente-photo" aria-hidden="true">
-                  <span className="docente-photo-label ds-caption">[PHOTO]</span>
+            <article key={i} className="docente-card">
+              <div className="docente-photo" aria-hidden="true">
+                <div className="docente-photo-corners hud-overlay" aria-hidden="true">
+                  <span className="docente-corner tl" />
+                  <span className="docente-corner tr" />
+                  <span className="docente-corner bl" />
+                  <span className="docente-corner br" />
                 </div>
-                <div className="docente-info">
-                  <h3 className="docente-name">{p.name}</h3>
-                  <p className="docente-role">{p.role}</p>
-                  <div className="docente-meta">
-                    <span className="badge badge-primary">{p.credential}</span>
-                    <span className="docente-expertise">{p.expertise}</span>
-                  </div>
+                <span className="docente-photo-label">[PHOTO]</span>
+                <span className="docente-photo-id hud-overlay" aria-hidden="true">ID · {String(i + 1).padStart(2, '0')}</span>
+              </div>
+              <div className="docente-info">
+                <div className="docente-meta-bar" aria-hidden="true">
+                  <span className="docente-type">{p.tag}</span>
+                  <span className="docente-status hud-overlay">
+                    <span className="docente-status-dot" />
+                    ATIVO
+                  </span>
                 </div>
-              </article>
-            </RevealOnScroll>
+                <h3 className="docente-name">{p.name}</h3>
+                <p className="docente-role">{p.role}</p>
+              </div>
+            </article>
           )}
         </div>
+      </div>
 
-        <RevealOnScroll delay={120}>
-          <div className="docentes-foot">
-            <CyButton variant="secondary" size="md" as="a" href="#cta"
-            icon={<Icon name="ArrowUpRight" size={16} />}>Ver corpo docente completo</CyButton>
-          </div>
-        </RevealOnScroll>
+      <div className="container">
+        <div className="docentes-nav docentes-nav--mobile">
+          <button className="docente-nav-btn" onClick={() => scroll(-1)} aria-label="Anterior">
+            <Icon name="ChevronLeft" size={20} />
+          </button>
+          <button className="docente-nav-btn" onClick={() => scroll(1)} aria-label="Próximo">
+            <Icon name="ChevronRight" size={20} />
+          </button>
+        </div>
       </div>
     </section>);
 

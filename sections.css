@@ -1596,8 +1596,7 @@
 .mercado-grid > .reveal,
 .diferenciais-grid > .reveal,
 .plans-grid > .reveal,
-.carreira-stats > .reveal,
-.docentes-grid > .reveal {
+.carreira-stats > .reveal {
   display: flex;
 }
 .mercado-grid > .reveal { position: relative; }
@@ -1605,8 +1604,7 @@
 .mercado-grid > .reveal > *,
 .diferenciais-grid > .reveal > *,
 .plans-grid > .reveal > *,
-.carreira-stats > .reveal > *,
-.docentes-grid > .reveal > * {
+.carreira-stats > .reveal > * {
   width: 100%;
 }
 
@@ -2057,93 +2055,205 @@
 }
 
 /* ── CORPO DOCENTE ─────────────────────────────────────────────────── */
-.docentes-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--space-5);
-  margin-top: var(--space-8);
+.docentes-scroll-wrap {
+  overflow: visible;
+  /* padding-top cria margem de clipping acima dos cards (hover lift não corta) */
+  padding-top: 10px;
+  margin-top: calc(var(--space-8) - 10px);
+  padding-bottom: var(--space-3);
 }
-@media (max-width: 1100px) { .docentes-grid { grid-template-columns: repeat(3, 1fr); } }
-@media (max-width: 800px)  { .docentes-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 480px)  { .docentes-grid { grid-template-columns: 1fr; } }
+.docentes-track {
+  display: flex;
+  gap: var(--space-5);
+  overflow-x: hidden;
+  padding-top: 8px; /* igual ao padding-top do wrap para alinhar os cards */
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  /* alinha com a borda do container (não com a viewport) */
+  padding-left: max(var(--container-padding), calc((100% - var(--container-max)) / 2 + var(--container-padding)));
+  padding-right: max(var(--container-padding), calc((100% - var(--container-max)) / 2 + var(--container-padding)));
+}
+.docentes-track::-webkit-scrollbar { display: none; }
+
+.docentes-nav {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+.docente-nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--ds-color-body);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color var(--duration-fast) var(--ease-out),
+              background var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out);
+}
+.docente-nav-btn:hover {
+  border-color: rgba(var(--color-brand-rgb), 0.45);
+  background: var(--color-bg);
+  color: var(--ds-color-primary);
+}
+
+.docentes-nav--mobile {
+  display: none;
+  margin-top: var(--space-6);
+}
+@media (max-width: 720px) {
+  #docentes .section-header-right { display: none; }
+  .docentes-nav--mobile { display: flex; }
+}
 
 .docente-card {
+  flex-shrink: 0;
+  width: 290px;
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
-  padding: var(--space-5);
+  gap: 0;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
-  transition: border-color var(--duration-fast) var(--ease-out),
-              transform var(--duration-fast) var(--ease-out),
-              box-shadow var(--duration-fast) var(--ease-out);
+  overflow: hidden;
+  transition: border-color var(--duration-base) var(--ease-out),
+              transform var(--duration-base) var(--ease-out),
+              box-shadow var(--duration-base) var(--ease-out);
 }
 .docente-card:hover {
-  border-color: rgba(var(--color-brand-rgb), 0.45);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 32px -16px rgba(var(--color-deep-rgb), 0.10);
+  border-color: rgba(var(--color-primary-rgb), 0.45);
+  transform: translateY(-8px);
+  box-shadow:
+    0 24px 56px -20px rgba(var(--color-deep-rgb), 0.18),
+    0 0 0 1px rgba(var(--color-primary-rgb), 0.08);
 }
 .docente-photo {
-  /* Etapa 1: listras diagonais + radial gradient ciano/roxo removidos.
-     Placeholder neutro até receber fotos reais. */
   position: relative;
-  aspect-ratio: 1 / 1;
-  border-radius: var(--radius-lg);
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
+  aspect-ratio: 3 / 4;
+  background-color: #0B1A2F;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent 0px,
+    transparent 7px,
+    rgba(0, 203, 201, 0.04) 7px,
+    rgba(0, 203, 201, 0.04) 8px
+  );
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
 }
+.docente-photo::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 45%;
+  background: linear-gradient(to top, rgba(10, 22, 40, 0.65), transparent);
+  pointer-events: none;
+}
+.docente-photo-corners {
+  position: absolute;
+  inset: var(--space-3);
+  z-index: 2;
+  pointer-events: none;
+}
+.docente-corner {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  border-color: rgba(var(--color-primary-rgb), 0.5);
+  border-style: solid;
+  transition: border-color var(--duration-base) var(--ease-out);
+}
+.docente-corner.tl { top: 0; left: 0; border-width: 1.5px 0 0 1.5px; }
+.docente-corner.tr { top: 0; right: 0; border-width: 1.5px 1.5px 0 0; }
+.docente-corner.bl { bottom: 0; left: 0; border-width: 0 0 1.5px 1.5px; }
+.docente-corner.br { bottom: 0; right: 0; border-width: 0 1.5px 1.5px 0; }
+.docente-card:hover .docente-corner {
+  border-color: rgba(var(--color-primary-rgb), 1);
+}
 .docente-photo-label {
+  font-family: var(--font-ui);
   font-size: var(--fs-caption);
-  letter-spacing: 0.18em;
-  color: var(--ds-color-caption);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(230, 238, 248, 0.28);
+  z-index: 1;
+  user-select: none;
 }
 .docente-photo-id {
   position: absolute;
-  bottom: var(--space-2);
-  left: var(--space-2);
+  bottom: var(--space-3);
+  right: var(--space-3);
+  font-family: var(--font-ui);
   font-size: var(--fs-tiny);
-  letter-spacing: 0.12em;
-  color: var(--color-text-muted);
-  opacity: 0.7;
+  letter-spacing: 0.13em;
+  color: rgba(var(--color-primary-rgb), 0.6);
+  z-index: 3;
+  user-select: none;
 }
-.docente-info { display: flex; flex-direction: column; gap: var(--space-2); }
-.docente-name {
-  font-size: var(--fs-h4);
-  font-weight: 600;
-  letter-spacing: -0.005em;
-}
-.docente-role {
-  font-family: var(--font-ui);
-  font-size: var(--fs-body-sm);
-  color: var(--ds-color-body);
-  letter-spacing: 0.04em;
-}
-.docente-meta {
+.docente-info {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: var(--space-2);
-  margin-top: var(--space-2);
-  flex-wrap: wrap;
+  padding: var(--space-4) var(--space-5) var(--space-5);
+  border-top: 1px solid var(--color-border);
 }
-.docente-expertise {
-  font-family: var(--font-ui);
-  font-size: var(--fs-caption);
-  letter-spacing: 0.08em;
-  color: var(--ds-color-body);
-  text-transform: uppercase;
-}
-.docentes-foot {
-  margin-top: var(--space-12);
+.docente-meta-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-6);
-  flex-wrap: wrap;
+  margin-bottom: var(--space-1);
+}
+.docente-type {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ds-color-caption);
+}
+.docente-status {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-ui);
+  font-size: var(--fs-tiny);
+  letter-spacing: 0.12em;
+  color: rgba(var(--color-primary-rgb), 0.75);
+}
+.docente-status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  flex-shrink: 0;
+  animation: docente-pulse 2.4s ease-in-out infinite;
+}
+@keyframes docente-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+.docente-name {
+  font-size: var(--fs-h4);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: var(--ds-color-heading);
+  margin: 0;
+}
+.docente-role {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--ds-color-body);
+  letter-spacing: 0.02em;
+  margin: 0;
 }
 
 /* ── FOCUS NOTE (editorial, sobre claro) ──────────────────────────── */

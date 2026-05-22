@@ -20,6 +20,9 @@ const ICON_DATA = {
   ChevronDown: {
     main: 'M6 9 L12 15 L18 9',
   },
+  ChevronLeft: {
+    main: 'M15 6 L9 12 L15 18',
+  },
   ChevronRight: {
     main: 'M9 6 L15 12 L9 18',
   },
