@@ -24,8 +24,7 @@
 function Hero({ gridIntensity = 'off' }) {
   return (
     <section className="lp-section hero" id="hero">
-      {/* Etapa 1: hero-image (placeholder) e overlay complexo removidos.
-          InteractiveGrid default 'off' — volta como Slot 1 na Etapa 3. */}
+      <img className="hero-image" src="assets/placeholder-hero.png" alt="" aria-hidden="true" />
       <div className="hero-bg" aria-hidden="true">
         <InteractiveGrid cellSize={56} intensity={gridIntensity} />
       </div>
@@ -87,6 +86,106 @@ function Hero({ gridIntensity = 'off' }) {
             </dl>
           </RevealOnScroll>
         </div>
+      </div>
+    </section>);
+
+}
+
+/* ────────────────────────────────────────────────────────────────────── *\
+ *  VISION — Statement claro, transição Hero → Mercado (light)
+\* ────────────────────────────────────────────────────────────────────── */
+
+const VISION_TOKENS = [
+  { kind: 'w', text: 'O' },
+  { kind: 'w', text: 'futuro', accent: true },
+  { kind: 'icon', name: 'Eye' },
+  { kind: 'w', text: 'das' },
+  { kind: 'w', text: 'empresas' },
+  { kind: 'w', text: 'depende' },
+  { kind: 'w', text: 'de' },
+  { kind: 'w', text: 'líderes' },
+  { kind: 'w', text: 'preparados' },
+  { kind: 'icon', name: 'Target' },
+  { kind: 'w', text: 'para' },
+  { kind: 'w', text: 'enfrentar' },
+  { kind: 'w', text: 'ameaças', accent: true },
+  { kind: 'w', text: 'digitais.', accent: true },
+  { kind: 'icon', name: 'Bug' },
+];
+
+function Vision() {
+  const ref = React.useRef(null);
+  const [visible, setVisible] = React.useState(false);
+
+  React.useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setVisible(true);
+      return;
+    }
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            setVisible(true);
+            io.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.2, rootMargin: '0px 0px -10% 0px' },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  let wordIndex = 0;
+  let iconIndex = 0;
+  const a11yText = VISION_TOKENS
+    .filter((t) => t.kind === 'w')
+    .map((t) => t.text)
+    .join(' ')
+    .replace(/\s+\./, '.');
+
+  return (
+    <section className="lp-section vision" id="vision">
+      <div
+        ref={ref}
+        className={`vision-inner ${visible ? 'is-visible' : ''}`}>
+
+        <p className="vision-hat">O novo perfil da liderança digital</p>
+        <h2
+          className="vision-statement"
+          aria-label={a11yText}>
+
+          {VISION_TOKENS.map((tok, i) => {
+            if (tok.kind === 'icon') {
+              const idx = iconIndex++;
+              return (
+                <span
+                  key={`i-${i}`}
+                  className="vision-icon"
+                  aria-hidden="true"
+                  style={{ '--i': idx }}>
+                  <Icon name={tok.name} size={88} color="var(--curso-color-primary)" />
+                </span>);
+
+            }
+            const idx = wordIndex++;
+            const isDot = tok.text === '.';
+            const cls = `vision-word${tok.accent ? ' vision-word--accent' : ''}${isDot ? ' vision-word--punct' : ''}`;
+            return (
+              <span
+                key={`w-${i}`}
+                className={cls}
+                aria-hidden="true"
+                style={{ '--i': idx }}>
+                {tok.text}
+              </span>);
+
+          })}
+        </h2>
       </div>
     </section>);
 
@@ -401,6 +500,79 @@ function CorpoDocente() {
 }
 
 /* ────────────────────────────────────────────────────────────────────── *\
+ *  USP SEAL — selo animado (tempero)
+\* ────────────────────────────────────────────────────────────────────── */
+
+function USPSeal() {
+  const rootRef = React.useRef(null);
+  const [visible, setVisible] = React.useState(false);
+
+  React.useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setVisible(true);
+      return;
+    }
+    const el = rootRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            setVisible(true);
+            io.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.3 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  const handleEnter = () => {
+    const el = rootRef.current;
+    if (!el) return;
+    el.classList.remove('is-boosting');
+    void el.offsetWidth;
+    el.classList.add('is-boosting');
+  };
+
+  const handleAnimEnd = (e) => {
+    if (e.animationName === 'usp-seal-boost' && rootRef.current) {
+      rootRef.current.classList.remove('is-boosting');
+    }
+  };
+
+  return (
+    <div
+      ref={rootRef}
+      className={`usp-seal${visible ? ' is-visible' : ''}`}
+      onMouseEnter={handleEnter}
+      onAnimationEnd={handleAnimEnd}
+      aria-hidden="true">
+
+      <div className="usp-seal-boost">
+        <div className="usp-seal-rotor">
+          <svg className="usp-seal-text-svg" viewBox="0 0 200 200">
+            <defs>
+              <path id="usp-seal-text-path"
+                d="M 100,100 m -78,0 a 78,78 0 1,1 156,0 a 78,78 0 1,1 -156,0" />
+            </defs>
+            <text className="usp-seal-text">
+              <textPath href="#usp-seal-text-path" startOffset="0" textLength="490" lengthAdjust="spacing">
+                USP · ESALQ · MBA EM CYBERSEGURANÇA · EST. 2026 ·{' '}
+              </textPath>
+            </text>
+          </svg>
+        </div>
+      </div>
+      <span className="usp-seal-logo" />
+    </div>);
+
+}
+
+/* ────────────────────────────────────────────────────────────────────── *\
  *  PERFIL DO ALUNO (clear)
 \* ────────────────────────────────────────────────────────────────────── */
 
@@ -432,6 +604,7 @@ function Perfil() {
   return (
     <section className="lp-section section-light" id="perfil">
       <div className="container">
+        <USPSeal />
         <SectionHeader
           eyebrow="04 · Perfil do aluno"
           title={<>Este MBA em Cibersegurança<br /><span className="muted">é para você?</span></>} />
@@ -772,22 +945,176 @@ function CTA({ dotGap = 22, dotSize = 1.4, showDots = true }) {
 \* ────────────────────────────────────────────────────────────────────── */
 
 function Footer() {
+  const cursos = [
+    { label: 'MBAs e Pós-Graduações', href: '#' },
+    { label: 'Cursos de Curta Duração', href: '#' },
+    { label: 'Cursos Gratuitos', href: '#' }];
+
+  const bolsas = [
+    { label: 'MBAs e Pós-graduações', href: '#' },
+    { label: 'Cursos de Curta Duração', href: '#' }];
+
+  const informacoes = [
+    { label: 'Sobre', href: '/sobre' },
+    { label: 'Parcerias', href: '/parcerias' },
+    { label: 'Blog', href: 'https://blog.mbauspesalq.com/' },
+    { label: 'Webinar', href: '/webinar' },
+    { label: 'faq', href: '/faq' },
+    { label: 'Aluno Indica Aluno', href: '/programa-aluno-indica-aluno' },
+    { label: 'Política de privacidade', href: 'https://pecege.com/politica-de-privacidade' }];
+
+  const socials = [
+    {
+      key: 'facebook',
+      label: 'Facebook do MBA USP/Esalq',
+      href: 'https://www.facebook.com/mbauspesalq',
+      svg: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 22v-9h3l.5-3.5h-3.5V7.2c0-1 .3-1.7 1.7-1.7H17V2.4C16.5 2.3 15.4 2.2 14.2 2.2c-2.6 0-4.4 1.6-4.4 4.4v2.9H7v3.5h2.8V22h3.7z" /></svg>
+    },
+    {
+      key: 'instagram',
+      label: 'Instagram do MBA USP/Esalq',
+      href: 'https://www.instagram.com/mbauspesalq/',
+      svg: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 1.2.1 1.8.3 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.2.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 1.2-.3 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.2.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-1.2-.1-1.8-.3-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8c.1-1.2.3-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4C8.4 2.2 8.8 2.2 12 2.2zm0 1.6c-3.1 0-3.5 0-4.7.1-1.1.1-1.7.2-2.1.4-.5.2-.9.4-1.3.8-.4.4-.6.8-.8 1.3-.2.4-.3 1-.4 2.1-.1 1.2-.1 1.6-.1 4.7s0 3.5.1 4.7c.1 1.1.2 1.7.4 2.1.2.5.4.9.8 1.3.4.4.8.6 1.3.8.4.2 1 .3 2.1.4 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c1.1-.1 1.7-.2 2.1-.4.5-.2.9-.4 1.3-.8.4-.4.6-.8.8-1.3.2-.4.3-1 .4-2.1.1-1.2.1-1.6.1-4.7s0-3.5-.1-4.7c-.1-1.1-.2-1.7-.4-2.1-.2-.5-.4-.9-.8-1.3-.4-.4-.8-.6-1.3-.8-.4-.2-1-.3-2.1-.4-1.2-.1-1.6-.1-4.7-.1zm0 2.7c2.9 0 5.3 2.4 5.3 5.3s-2.4 5.3-5.3 5.3-5.3-2.4-5.3-5.3 2.4-5.3 5.3-5.3zm0 8.8c1.9 0 3.5-1.6 3.5-3.5s-1.6-3.5-3.5-3.5-3.5 1.6-3.5 3.5 1.6 3.5 3.5 3.5zm6.7-9c0 .7-.6 1.2-1.2 1.2s-1.2-.6-1.2-1.2.6-1.2 1.2-1.2 1.2.5 1.2 1.2z" /></svg>
+    },
+    {
+      key: 'twitter',
+      label: 'Twitter do MBA USP/Esalq',
+      href: 'https://twitter.com/mbauspesalq',
+      svg: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
+    },
+    {
+      key: 'linkedin',
+      label: 'Linkedin do MBA USP/Esalq',
+      href: 'https://br.linkedin.com/school/mba-usp-esalq/',
+      svg: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 2h-17A1.5 1.5 0 0 0 2 3.5v17A1.5 1.5 0 0 0 3.5 22h17a1.5 1.5 0 0 0 1.5-1.5v-17A1.5 1.5 0 0 0 20.5 2zM8 19H5v-9h3v9zM6.5 8.25A1.75 1.75 0 1 1 8.3 6.5a1.78 1.78 0 0 1-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0 0 13 14.19a.66.66 0 0 0 0 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 0 1 2.7-1.4c1.55 0 3.36.86 3.36 3.66V19z" /></svg>
+    },
+    {
+      key: 'youtube',
+      label: 'Youtube do MBA USP/Esalq',
+      href: 'https://www.youtube.com/channel/UCDYYGdKY3_zOk3L0VBdx9XQ',
+      svg: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" /></svg>
+    },
+    {
+      key: 'tiktok',
+      label: 'Tiktok do MBA USP/Esalq',
+      href: 'https://www.tiktok.com/@mbauspesalq',
+      svg: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" /></svg>
+    }];
+
+  const PhoneIcon = (
+    <svg viewBox="0 0 512 512" aria-hidden="true"><path d="M493.4 24.6l-104-24c-11.3-2.6-22.9 3.3-27.5 13.9l-48 112c-4.2 9.8-1.4 21.3 6.9 28l60.6 49.6c-36 76.7-98.9 140.5-177.2 177.2l-49.6-60.6c-6.8-8.3-18.2-11.1-28-6.9l-112 48C3.9 366.5-2 378.1.6 389.4l24 104C27.1 504.2 36.7 512 48 512c256.1 0 464-207.5 464-464 0-11.2-7.7-20.9-18.6-23.4z" /></svg>);
+
+  const WhatsAppIcon = (
+    <svg viewBox="0 0 448 512" aria-hidden="true"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z" /></svg>);
+
+  const EnvelopeIcon = (
+    <svg viewBox="0 0 512 512" aria-hidden="true"><path d="M464 64H48C21.49 64 0 85.49 0 112v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm0 48v40.805c-22.422 18.259-58.168 46.651-134.587 106.49-16.841 13.247-50.201 45.072-73.413 44.701-23.208.375-56.579-31.459-73.413-44.701C106.18 199.465 70.425 171.067 48 152.805V112h416zM48 400V214.398c22.914 18.251 55.409 43.862 104.938 82.646 21.857 17.205 60.134 55.186 103.062 54.955 42.717.231 80.509-37.199 103.053-54.947 49.528-38.783 82.032-64.401 104.947-82.653V400H48z" /></svg>);
+
   return (
     <footer className="lp-footer">
-      <div className="container lp-footer-inner">
-        <div className="lp-footer-brand">
-          <img src="assets/mba-usp-esalq.svg" alt="MBA USP/Esalq" className="lp-brand-logo" />
+      <div className="lp-footer-main">
+        <div className="lp-footer-container">
+          <div className="lp-footer-grid">
+
+            {/* Coluna 1 — Marca */}
+            <div className="lp-footer-col lp-footer-brand-col">
+              <img
+                src="assets/mba-usp-esalq.svg"
+                alt="MBA USP/Esalq"
+                className="lp-footer-brand-logo" />
+              <p className="lp-footer-brand-text">Pós-graduação Lato sensu da USP</p>
+              <p className="lp-footer-brand-text">*Campanha válida para a turma do primeiro semestre de 2026</p>
+            </div>
+
+            {/* Coluna 2 — Nossos Cursos + Programa de Bolsas */}
+            <div className="lp-footer-col">
+              <div className="lp-footer-block">
+                <span className="lp-footer-title">Nossos Cursos</span>
+                <ul className="lp-footer-list">
+                  {cursos.map((it) =>
+                    <li key={it.label}><a href={it.href}>{it.label}</a></li>
+                  )}
+                </ul>
+              </div>
+              <div className="lp-footer-block">
+                <span className="lp-footer-title">Programa de Bolsas</span>
+                <ul className="lp-footer-list">
+                  {bolsas.map((it) =>
+                    <li key={it.label}><a href={it.href}>{it.label}</a></li>
+                  )}
+                </ul>
+              </div>
+            </div>
+
+            {/* Coluna 3 — Informações */}
+            <div className="lp-footer-col">
+              <div className="lp-footer-block">
+                <span className="lp-footer-title">Informações</span>
+                <ul className="lp-footer-list">
+                  {informacoes.map((it) =>
+                    <li key={it.label}>
+                      {it.label === 'faq' ?
+                        <a href={it.href}>
+                          <span className="lp-footer-faq-bold">FAQ</span>
+                          <span> (Perguntas Frequentes)</span>
+                        </a> :
+                        <a href={it.href}>{it.label}</a>
+                      }
+                    </li>
+                  )}
+                </ul>
+              </div>
+            </div>
+
+            {/* Coluna 4 — Contatos */}
+            <div className="lp-footer-col">
+              <div className="lp-footer-block">
+                <span className="lp-footer-title">Contatos</span>
+                <ul className="lp-footer-list lp-footer-contact-list">
+                  <li>
+                    <a href="tel:+551926603343" aria-label="Entre em contato via Telefone">
+                      {PhoneIcon}<span>+55 (19) 2660-3343</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://wa.me/551926603343" aria-label="Entre em contato via WhatsApp" target="_blank" rel="noopener noreferrer">
+                      {WhatsAppIcon}<span>+55 (19) 2660-3343</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="mailto:info@mbauspesalq.com" aria-label="Entre em contato via E-mail">
+                      {EnvelopeIcon}<span>info@mbauspesalq.com</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Coluna 5 — Login + Redes Sociais */}
+            <div className="lp-footer-col lp-footer-social-col">
+              <button type="button" className="lp-footer-login">Login</button>
+              <ul className="lp-footer-socials">
+                {socials.map((s) =>
+                  <li key={s.key} className={`lp-footer-soc-${s.key}`}>
+                    <a href={s.href} aria-label={s.label} target="_blank" rel="noopener noreferrer">
+                      {s.svg}
+                    </a>
+                  </li>
+                )}
+              </ul>
+            </div>
+
+          </div>
         </div>
-        <nav className="lp-footer-nav" aria-label="Navegação do rodapé">
-          <a href="#mercado">Mercado</a>
-          <a href="#diferenciais">Diferenciais</a>
-          <a href="#investimento">Investimento</a>
-          <a href="#faq">FAQ</a>
-        </nav>
-        <div className="lp-footer-meta ds-caption">
-          <span>Pós-graduação Lato Sensu</span>
-          <span>·</span>
-          <span>© 2026</span>
+      </div>
+
+      <div className="lp-footer-copyright">
+        <div className="lp-footer-copyright-inner">
+          <div>Todos os direitos reservados &ndash; 2026</div>
+          <div>
+            <span className="lp-footer-pecege-prefix">Desenvolvido por:</span>
+            <a href="https://pecege.com/">Pecege</a>
+          </div>
         </div>
       </div>
     </footer>);
@@ -819,7 +1146,7 @@ function SectionHeader({ eyebrow, title, right, tone = 'light' }) {
 }
 
 Object.assign(window, {
-  Hero,
+  Hero, Vision,
   Mercado, Carreira, Diferenciais, CorpoDocente, Perfil, Investimento,
   FAQ, CTA, Footer, SectionHeader
 });

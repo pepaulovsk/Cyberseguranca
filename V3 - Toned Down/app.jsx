@@ -42,7 +42,7 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "mbaFontSecondary":      "Roboto",
   "mbaBody":               "#2D3748",
   "mbaBodyOpacity":        100,
-  "mbaFontDeco":           "Roboto",
+  "mbaFontDeco":           "Poppins",
   "mbaCaption":            "#5A6779",
   "mbaCaptionOpacity":     100,
   "cursoBg":               "#0F1F38",
@@ -51,7 +51,7 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "cursoSurfaceOpacity":   6,
   "cursoHero":             "#0A1628",
   "cursoHeroOpacity":      100,
-  "cursoPrimary":          "#00CBC9",
+  "cursoPrimary":          "#009FCB",
   "cursoPrimaryOpacity":   100,
   "cursoSecondary":        "#A36DFF",
   "cursoSecondaryOpacity": 100,
@@ -203,6 +203,7 @@ function App() {
       <Header />
       <main>
         <Hero gridIntensity={t.tempero ? t.gridIntensity : 'off'} />
+        <Vision />
         <Mercado />
         <Carreira />
         <Diferenciais dotGap={t.dotGap} dotSize={t.dotSize} showDots={t.tempero} />

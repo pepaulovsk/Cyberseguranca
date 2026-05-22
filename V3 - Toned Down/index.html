@@ -263,25 +263,53 @@
       .reveal { opacity: 1; transform: none; }
     }
 
-    /* ── eyebrow / kicker reutilizável ─────────────────────────────── */
+    /* ── eyebrow / kicker reutilizável ───────────────────────────────
+     * DS MBA (default, seções claras): chip institucional — pill com
+     *   bg/border tonais em brand blue + bolinha azul como marcador.
+     *   Linguagem de "selo USP" (mesma família visual dos badges da hero).
+     * DS Curso (.section-deep): kicker HUD — linha de 24px + caption
+     *   uppercase mono, em cyan. Look de scanline técnica. */
     .eyebrow {
-      font-family: var(--font-ui);
-      font-size: var(--fs-caption);
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--color-brand);       /* brand blue em seções claras */
       display: inline-flex;
       align-items: center;
-      gap: var(--space-2);
+      gap: var(--space-1-5);
+      padding: 5px 12px;
+      font-family: var(--font-ui);
+      font-size: var(--fs-micro);
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-brand);
+      background: rgba(var(--color-brand-rgb), 0.06);
+      border: 1px solid rgba(var(--color-brand-rgb), 0.22);
+      border-radius: 999px;
     }
     .eyebrow::before {
       content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--color-brand);
+      flex-shrink: 0;
+    }
+    /* em seções escuras: sabor do curso — restaura a linha + caption mono cyan */
+    .section-deep .eyebrow {
+      padding: 0;
+      gap: var(--space-2);
+      font-size: var(--fs-caption);
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      color: var(--color-primary);
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+    }
+    .section-deep .eyebrow::before {
       width: 24px;
       height: 1px;
+      border-radius: 0;
       background: currentColor;
     }
-    /* em seções escuras: sabor do curso */
-    .section-deep .eyebrow { color: var(--color-primary); }
 
     /* ── .hud — classe dos ornamentos decorativos (aria-hidden) ────────
        Cor via --ds-color-caption; cascade garante contraste correto

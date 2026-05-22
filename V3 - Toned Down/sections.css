@@ -730,7 +730,7 @@
   text-wrap: balance;
 }
 .section-title .muted {
-  color: var(--ds-color-caption);
+  color: var(--ds-color-heading);
   font-weight: 400;
 }
 @media (max-width: 720px) {
@@ -752,9 +752,16 @@
   align-items: center;
 }
 
-/* Etapa 1: hero-image (placeholder PNG) + overlay com radial gradient
-   complexo foram removidos. Hero é deep sólido até receber imagem real
-   ou o Slot 1 (Etapa 3). InteractiveGrid default = 'off'. */
+.hero-image {
+  position: absolute; inset: 0;
+  z-index: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  opacity: 0.18;
+  pointer-events: none;
+}
+
 .hero-bg {
   position: absolute; inset: 0;
   z-index: 1;
@@ -1349,42 +1356,236 @@
   max-width: 720px;
 }
 
-/* ── FOOTER ────────────────────────────────────────────────────────── */
+/* ── FOOTER (1:1 spec institucional MBA USP/Esalq) ──────────────────────
+ * Reset tipográfico próprio: Roboto, 14.4px, line-height 24px, cor #434343.
+ * Independente dos tokens DS da LP — esta é a faixa institucional
+ * espelhada do site mbauspesalq.com. */
 .lp-footer {
-  border-top: 1px solid var(--color-border);
-  padding: var(--space-10) 0;
-  background: var(--color-bg);
+  font-family: 'Roboto', 'Roboto Fallback', system-ui, sans-serif;
+  font-size: 14.4px;
+  line-height: 24px;
+  color: #434343;
 }
-.lp-footer-inner {
+.lp-footer * { box-sizing: border-box; }
+
+/* ── Faixa superior ─────────────────────────────────────────────────── */
+.lp-footer-main {
+  background: #FFFFFF;
+  border-top: 1px solid #DDDDDD;
+  padding: 32px 0;
+}
+.lp-footer-container {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+.lp-footer-grid {
+  display: grid;
+  grid-template-columns: 298.75px 258.91px 199.17px 199.16px 270px;
+  gap: 16px;
+}
+.lp-footer-col {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Coluna 1 — Marca */
+.lp-footer-brand-logo {
+  width: 120px;
+  height: 49px;
+  margin-bottom: 24px;
+  display: block;
+}
+.lp-footer-brand-text {
+  margin: 0;
+  color: #000000;
+  font-weight: 400;
+  font-size: 14.4px;
+  line-height: 24px;
+}
+
+/* Títulos de bloco */
+.lp-footer-title {
+  display: inline;
+  color: #000000;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  font-size: 14.4px;
+  line-height: 24px;
+}
+
+/* Bloco interno (título + lista) — segundo bloco fica logo abaixo */
+.lp-footer-block + .lp-footer-block {
+  margin-top: 16px;
+}
+
+/* Listas */
+.lp-footer-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+.lp-footer-list li {
+  list-style: none;
+  margin-bottom: 4px;
+  line-height: 24px;
+}
+.lp-footer-list a {
+  color: #434343;
+  font-weight: 400;
+  font-size: 14.4px;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s;
+}
+.lp-footer-list a:hover { border-bottom-color: currentColor; }
+.lp-footer-faq-bold { font-weight: 600; }
+
+/* Contatos */
+.lp-footer-contact-list a {
   display: flex;
   align-items: center;
+  gap: 6px;
+}
+.lp-footer-contact-list svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+/* Coluna 5 — Login + redes sociais */
+.lp-footer-social-col {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+.lp-footer-login {
+  align-self: flex-start;
+  height: 46px;
+  padding: 8px 12.8px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1;
+  color: #0D3DB2;
+  background: rgba(0, 0, 0, 0);
+  border: 1px solid #0D3DB2;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+.lp-footer-login:hover {
+  background: #0D3DB2;
+  color: #FFFFFF;
+}
+
+.lp-footer-socials {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.lp-footer-socials li {
+  width: 35px;
+  height: 35px;
+  border-radius: 55%;
+  list-style: none;
+}
+.lp-footer-socials a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  text-decoration: none;
+  transition: transform 0.2s, opacity 0.2s;
+}
+.lp-footer-socials a:hover {
+  transform: scale(1.08);
+  opacity: 0.92;
+}
+.lp-footer-socials svg {
+  width: 20px;
+  height: 20px;
+  fill: #FFFFFF;
+  stroke: currentColor;
+  stroke-width: 0;
+}
+.lp-footer-soc-facebook  { background-color: #3B5998; }
+.lp-footer-soc-instagram { background-color: #EB1967; }
+.lp-footer-soc-twitter   { background-color: #000000; }
+.lp-footer-soc-linkedin  { background-color: #0077B5; }
+.lp-footer-soc-youtube   { background-color: #CD201F; }
+.lp-footer-soc-tiktok    { background-color: #000000; }
+
+/* ── Faixa inferior (copyright) ─────────────────────────────────────── */
+.lp-footer-copyright {
+  width: 100%;
+  background: #DDDDDD;
+  color: #000000;
+  padding: 12.8px 0;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14.4px;
+}
+.lp-footer-copyright-inner {
+  display: flex;
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: var(--space-6);
+  align-items: normal;
+  max-width: 1290px;
+  margin: 0 auto;
+  padding: 0 15px;
 }
-.lp-footer-brand {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2-5);
-  font-family: var(--font-ui);
-  font-weight: 700;
-  font-size: var(--fs-body-sm);
+.lp-footer-copyright-inner a {
+  color: #434343;
+  font-weight: 600;
+  font-size: 14.4px;
+  text-decoration: none;
 }
-.lp-footer-nav {
-  display: flex;
-  gap: var(--space-6);
-  font-family: var(--font-ui);
-  font-size: var(--fs-body-sm);
-  color: var(--color-text-muted);
+.lp-footer-copyright-inner a:hover { text-decoration: underline; }
+.lp-footer-pecege-prefix {
+  color: #000000;
+  font-weight: 400;
+  font-size: 14.4px;
+  margin-right: 6px;
 }
-.lp-footer-nav a:hover { color: var(--color-text); }
-.lp-footer-meta {
-  display: flex;
-  gap: var(--space-2);
-  align-items: center;
-  font-family: var(--font-ui);
-  font-size: var(--fs-micro);
-  color: var(--ds-color-caption);
+
+/* ── Responsividade ─────────────────────────────────────────────────── */
+@media (max-width: 1339px) {
+  .lp-footer-grid {
+    grid-template-columns:
+      minmax(0, 298.75px)
+      minmax(0, 258.91px)
+      minmax(0, 199.17px)
+      minmax(0, 199.16px)
+      minmax(0, 270px);
+  }
+}
+@media (max-width: 1023px) {
+  .lp-footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px 16px;
+  }
+  .lp-footer-brand-col { grid-column: 1 / -1; }
+}
+@media (max-width: 640px) {
+  .lp-footer-main { padding: 32px 0; }
+  .lp-footer-container { padding: 0 20px; }
+  .lp-footer-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .lp-footer-copyright-inner {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+    padding: 0 20px;
+  }
 }
 
 /* ── EQUALIZAÇÃO DE ALTURA DE CARDS EM GRIDS ───────────────────────
@@ -1445,7 +1646,7 @@
     rgba(var(--color-primary-rgb), 0.7) 320deg,
     rgba(var(--color-primary-rgb), 0) 360deg
   );
-  -webkit-mask:
+-webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
@@ -2273,4 +2474,263 @@
 @media (max-width: 720px) {
   .alumni-ticker-track { gap: var(--space-6); }
   .alumni-mark { width: 36px; height: 36px; }
+}
+
+/* ── VISION — statement claro entre Hero e Mercado ───────────────────── */
+.lp-section.vision {
+  background: var(--mba-color-surface);
+  color: var(--mba-color-heading);
+  position: relative;
+  isolation: isolate;
+  padding-top: clamp(96px, 14vh, 184px);
+  padding-bottom: clamp(96px, 14vh, 184px);
+}
+.vision-inner {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+  text-align: center;
+}
+.vision-hat {
+  font-family: var(--mba-font-deco);
+  font-size: var(--fs-caption);
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--mba-color-caption);
+  margin: 0 0 var(--space-8);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 480ms var(--ease-out),
+    transform 480ms var(--ease-out);
+  transition-delay: 80ms;
+  will-change: opacity, transform;
+}
+.vision-hat::before,
+.vision-hat::after {
+  content: '';
+  width: 28px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
+}
+.vision-inner.is-visible .vision-hat {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .vision-hat {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+.vision-statement {
+  font-family: var(--curso-font-primary);
+  font-size: var(--fs-display);
+  font-weight: 600;
+  line-height: 1.0;
+  letter-spacing: -0.015em;
+  color: var(--mba-color-heading);
+  text-wrap: balance;
+  max-width: min(960px, 92vw);
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.18em 0.32em;
+}
+.vision-word,
+.vision-icon {
+  display: inline-flex;
+  align-items: center;
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 520ms var(--ease-out),
+    transform 520ms var(--ease-out);
+  will-change: opacity, transform;
+  transition-delay: calc(var(--i, 0) * 55ms);
+}
+/* Ícone: SVG cresce sem empurrar a linha — o span fica com altura 1em
+   e overflow visível, então o SVG (88px) ultrapassa o box mas o
+   line-box do flex continua determinado pelo texto. */
+.vision-icon {
+  width: 1.4em;
+  height: 1em;
+  line-height: 0;
+  overflow: visible;
+  justify-content: center;
+  color: var(--curso-color-primary);
+  /* entrada via @keyframes (com fill-mode backwards) para liberar
+     o transform pro hover depois que a animação termina. */
+  transform: scale(0.55) rotate(-6deg);
+  transition: none;
+  cursor: default;
+  /* SVG nítido em qualquer scale: desliga a camada de composição
+     que cacheia o raster do vetor no tamanho 1.0. */
+  will-change: auto;
+}
+.vision-icon svg {
+  display: block;
+  pointer-events: none;
+}
+.vision-word--accent {
+  color: var(--curso-color-primary);
+}
+.vision-word--punct {
+  margin-left: -0.28em;
+}
+.vision-inner.is-visible .vision-word {
+  opacity: 1;
+  transform: translateY(0);
+}
+.vision-inner.is-visible .vision-icon {
+  opacity: 1;
+  transform: scale(1) rotate(0);
+  animation: vision-icon-in 460ms var(--ease-out)
+             calc(1100ms + var(--i, 0) * 140ms) backwards;
+  transition:
+    opacity 260ms var(--ease-out),
+    transform 280ms var(--ease-out);
+}
+@keyframes vision-icon-in {
+  from {
+    opacity: 0;
+    transform: scale(0.55) rotate(-6deg);
+  }
+}
+.vision-inner.is-visible .vision-icon:hover,
+.vision-inner.is-visible .vision-icon:focus-visible {
+  transform: scale(1.14) rotate(8deg);
+}
+@media (max-width: 768px) {
+  .vision-statement { gap: 0.14em 0.24em; }
+  .vision-icon { width: 1.3em; }
+  .vision-icon svg { width: 56px; height: 56px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vision-word,
+  .vision-icon {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    animation: none;
+  }
+}
+
+/* ── USP SEAL — selo animado (tempero) ───────────────────────────── */
+#perfil > .container { position: relative; }
+
+.usp-seal {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  width: 156px;
+  height: 156px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(var(--color-primary-rgb, 0, 159, 203), 0.08);
+  opacity: 0;
+  transform: rotate(12deg) scale(0.4);
+  transition:
+    transform 720ms cubic-bezier(.34, 1.56, .64, 1),
+    opacity 480ms ease-out;
+  z-index: 3;
+}
+.usp-seal.is-visible {
+  opacity: 1;
+  transform: rotate(12deg) scale(1);
+}
+.usp-seal::before,
+.usp-seal::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.usp-seal::before {
+  inset: 0;
+  border: 2px solid rgba(var(--color-primary-rgb, 0, 159, 203), 0.55);
+}
+.usp-seal::after {
+  inset: 16%;
+  border: 2px solid rgba(var(--color-primary-rgb, 0, 159, 203), 0.32);
+}
+
+.usp-seal-boost,
+.usp-seal-rotor {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+.usp-seal-rotor {
+  animation: usp-seal-spin 22s linear infinite;
+}
+.usp-seal.is-boosting .usp-seal-boost {
+  animation: usp-seal-boost 900ms cubic-bezier(.5, 0, .5, 1);
+}
+
+.usp-seal-text-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+.usp-seal-text {
+  fill: var(--curso-color-primary, var(--color-primary));
+  font-family: var(--curso-font-deco);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.usp-seal-logo {
+  position: relative;
+  width: 50%;
+  aspect-ratio: 984.76 / 399.31;
+  background-color: var(--curso-color-primary, var(--color-primary));
+  -webkit-mask: url('assets/USP.svg') center / contain no-repeat;
+          mask: url('assets/USP.svg') center / contain no-repeat;
+  display: block;
+  pointer-events: none;
+}
+
+@keyframes usp-seal-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes usp-seal-boost {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+[data-tempero="off"] .usp-seal { display: none; }
+
+@media (max-width: 768px) {
+  .usp-seal {
+    width: 104px;
+    height: 104px;
+    top: var(--space-2);
+    right: var(--space-2);
+  }
+  .usp-seal-text { font-size: 11px; }
+  .usp-seal::after { inset: 20%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .usp-seal { transition: opacity 200ms ease-out; transform: rotate(12deg) scale(1); }
+  .usp-seal-rotor { animation: none; }
+  .usp-seal.is-boosting .usp-seal-boost { animation: none; }
 }
