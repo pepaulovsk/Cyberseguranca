@@ -10,6 +10,40 @@ function hexToRgbChannels(hex) {
   return `${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}`;
 }
 
+function hexToHslComponents(hex) {
+  var h = String(hex).replace('#', '');
+  if (h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+  var n = parseInt(h.slice(0, 6), 16);
+  if (isNaN(n)) return null;
+  var r = ((n >> 16) & 255) / 255, g = ((n >> 8) & 255) / 255, b = (n & 255) / 255;
+  var max = Math.max(r, g, b), min = Math.min(r, g, b);
+  var l = (max + min) / 2;
+  if (max === min) return { h: 0, s: 0, l: l };
+  var d = max - min, s = l > 0.5 ? d / (2 - max - min) : d / (max + min), hue;
+  if (max === r) hue = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+  else if (max === g) hue = ((b - r) / d + 2) / 6;
+  else hue = ((r - g) / d + 4) / 6;
+  return { h: hue * 360, s: s, l: l };
+}
+
+// Converte a cor primária em um tint muito escuro (para backgrounds de seções).
+// Preserva o hue/matiz, reduz saturação e força lightness baixo.
+function primaryToDarkTint(hex, lightness) {
+  var hsl = hexToHslComponents(hex);
+  if (!hsl) return null;
+  var h = hsl.h, s = Math.min(hsl.s * 0.55, 0.35), l = lightness;
+  var k = function(n) { return (n + h / 30) % 12; };
+  var a = s * Math.min(l, 1 - l);
+  var f = function(n) {
+    return Math.round((l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)))) * 255);
+  };
+  var rv = f(0), gv = f(8), bv = f(4);
+  return {
+    hex: '#' + rv.toString(16).padStart(2, '0') + gv.toString(16).padStart(2, '0') + bv.toString(16).padStart(2, '0'),
+    rgb: rv + ', ' + gv + ', ' + bv,
+  };
+}
+
 const FONT_STACKS = {
   'Poppins':        "'Poppins', system-ui, sans-serif",
   'Roboto':         "'Roboto', system-ui, sans-serif",
@@ -51,7 +85,7 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "cursoSurfaceOpacity":   6,
   "cursoHero":             "#0A1628",
   "cursoHeroOpacity":      100,
-  "cursoPrimary":          "#009FCB",
+  "cursoPrimary":          "#b48dc2",
   "cursoPrimaryOpacity":   100,
   "cursoSecondary":        "#A36DFF",
   "cursoSecondaryOpacity": 100,
@@ -156,11 +190,22 @@ function App() {
       r.style.setProperty('--color-accent-soft-rgb', secRgb);
       r.style.setProperty('--curso-color-secondary-rgb', secRgb);
     }
-    const deepRgb = hexToRgbChannels(t.cursoHero);
-    if (deepRgb) r.style.setProperty('--color-deep-rgb', deepRgb);
     r.style.setProperty('--curso-font-primary',   FONT_STACKS[t.cursoFontPrimary]   || t.cursoFontPrimary);
     r.style.setProperty('--curso-font-secondary', FONT_STACKS[t.cursoFontSecondary] || t.cursoFontSecondary);
     r.style.setProperty('--curso-font-deco',      FONT_STACKS[t.cursoFontDeco]      || t.cursoFontDeco);
+    // Backgrounds derivados da cor primária: preservam o hue, força lightness baixo
+    // para garantir contraste enquanto "respondem" visualmente ao DS do curso.
+    const heroTint = primaryToDarkTint(t.cursoPrimary, 0.08);
+    const bgTint   = primaryToDarkTint(t.cursoPrimary, 0.12);
+    if (heroTint) {
+      r.style.setProperty('--color-deep',       heroTint.hex);
+      r.style.setProperty('--curso-color-hero', heroTint.hex);
+      r.style.setProperty('--color-deep-rgb',   heroTint.rgb);
+    }
+    if (bgTint) {
+      r.style.setProperty('--color-deep-2',   bgTint.hex);
+      r.style.setProperty('--curso-color-bg', bgTint.hex);
+    }
   }, [t.cursoBg, t.cursoBgOpacity, t.cursoSurface, t.cursoSurfaceOpacity,
       t.cursoHero, t.cursoHeroOpacity,
       t.cursoPrimary, t.cursoPrimaryOpacity,
@@ -208,6 +253,7 @@ function App() {
         <Carreira />
         <Diferenciais dotGap={t.dotGap} dotSize={t.dotSize} showDots={t.tempero} />
         <Perfil />
+        <Programa />
         <CorpoDocente />
         <Investimento tempero={t.tempero} />
         <FAQ />
@@ -256,12 +302,8 @@ function App() {
             content: (
               <>
                 <TweakSection label="Cores" />
-                <ColorPicker label="Background" hex={t.cursoBg}        opacity={t.cursoBgOpacity}
-                  onHex={v => setTweak('cursoBg', v)}          onOpacity={v => setTweak('cursoBgOpacity', v)} />
                 <ColorPicker label="Surface"    hex={t.cursoSurface}    opacity={t.cursoSurfaceOpacity}
                   onHex={v => setTweak('cursoSurface', v)}     onOpacity={v => setTweak('cursoSurfaceOpacity', v)} />
-                <ColorPicker label="Hero"       hex={t.cursoHero}       opacity={t.cursoHeroOpacity}
-                  onHex={v => setTweak('cursoHero', v)}        onOpacity={v => setTweak('cursoHeroOpacity', v)} />
                 <ColorPicker label="Primary"    hex={t.cursoPrimary}    opacity={t.cursoPrimaryOpacity}
                   onHex={v => setTweak('cursoPrimary', v)}     onOpacity={v => setTweak('cursoPrimaryOpacity', v)} />
                 <ColorPicker label="Secondary"  hex={t.cursoSecondary}  opacity={t.cursoSecondaryOpacity}
@@ -338,20 +380,33 @@ function App() {
   if (document.getElementById('cy-tempero-css')) return;
   const s = document.createElement('style');
   s.id = 'cy-tempero-css';
-  s.textContent = `[data-tempero="off"] .hud-overlay { display: none; }`;
+  s.textContent = `
+    [data-tempero="off"] .hud-overlay { display: none; }
+    [data-tempero="off"] .docente-photo-corners,
+    [data-tempero="off"] .docente-photo-id,
+    [data-tempero="off"] .docente-status { display: none; }
+  `;
   document.head.appendChild(s);
 })();
 
 /* ── Curso tokens → cascade into .section-deep ── */
 (function injectCursoTokensCSS() {
   if (document.getElementById('cy-curso-tokens-css')) return;
+  // Pré-computa os tints escuros a partir do primary padrão para evitar flash.
+  const defaultPrimary = '#b48dc2';
+  const heroInit = primaryToDarkTint(defaultPrimary, 0.08);
+  const bgInit   = primaryToDarkTint(defaultPrimary, 0.12);
+  const heroColor = heroInit ? heroInit.hex : '#0A1628';
+  const bgColor   = bgInit   ? bgInit.hex   : '#0F1F38';
   const s = document.createElement('style');
   s.id = 'cy-curso-tokens-css';
   s.textContent = `
     :root {
-      --curso-color-bg:        #0F1F38;
+      --curso-color-bg:        ${bgColor};
       --curso-color-surface:   rgba(255,255,255,0.06);
-      --curso-color-hero:      #0A1628;
+      --curso-color-hero:      ${heroColor};
+      --color-deep:            ${heroColor};
+      --color-deep-2:          ${bgColor};
       --curso-color-secondary: #7C3AED;
       --curso-color-secondary-rgb: 124, 58, 237;
       --curso-radius-sm: 6px; --curso-radius-md: 10px; --curso-radius-lg: 14px;

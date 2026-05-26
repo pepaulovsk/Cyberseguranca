@@ -436,6 +436,180 @@ function Diferenciais({ dotGap = 22, dotSize = 1.4, showDots = true }) {
 }
 
 /* ────────────────────────────────────────────────────────────────────── *\
+ *  PROGRAMA DO CURSO (deep, alt)
+\* ────────────────────────────────────────────────────────────────────── */
+
+function Programa() {
+  const [active, setActive] = React.useState(0);
+
+  const modules = [
+    {
+      id: 'intro',
+      label: 'Módulo Introdutório',
+      tag: 'Pré-curso',
+      desc: 'Base sólida de conhecimento e habilidades essenciais antes dos módulos regulares.',
+      isSchedule: true,
+      items: [
+        { date: '05/05/2026', title: 'Fundamentos de Linux I' },
+        { date: '07/05/2026', title: 'Fundamentos de Linux II' },
+        { date: '12/05/2026', title: 'Redes para Cibersegurança I' },
+        { date: '14/05/2026', title: 'Redes para Cibersegurança II' },
+      ],
+    },
+    {
+      id: 'm1',
+      label: 'Módulo 1',
+      tag: 'Governança e Gestão',
+      items: [
+        'Agile Management & Lean Startup',
+        'Análise da Conjuntura Econômica em Cenários de Tecnologia',
+        'Análise de dados aplicada à cibersegurança (Big Data & BI)',
+        'Atração e Retenção de Times de Cibersegurança',
+        'Cloud Security',
+        'Criptografia Aplicada e Computação Quântica',
+        'Design Thinking',
+        'Ethical Hacking',
+        'Gestão de Equipes Multiculturais e Intergeracionais',
+        'Gestão Financeira',
+        'Governança e Segurança da Informação',
+      ],
+    },
+    {
+      id: 'm2',
+      label: 'Módulo 2',
+      tag: 'Ataque e Defesa Cibernéticos',
+      items: [
+        'Análise de vulnerabilidades em aplicações web',
+        'Análise Forense Digital',
+        'Compliance em Segurança da Informação',
+        'Direito Digital',
+        'Gestão da Mudança',
+        'Inteligência e Contra-Inteligência Cibernética',
+        'Planejamento e Gestão Estratégica',
+        'Regulação Internacional e Geopolítica da Cibersegurança',
+        'Segurança no ciclo de desenvolvimento de software (DevSecOps)',
+        'Simulação prática de ataque e defesa (Pentest e CTF)',
+      ],
+    },
+    {
+      id: 'm3',
+      label: 'Módulo 3',
+      tag: 'Gestão de Riscos e Tecnologias',
+      items: [
+        'Armadilhas para captura e estudo de atacantes (Honeypots)',
+        'Blockchain, Criptomoedas e Smart Contracts',
+        'Cibersegurança e ESG',
+        'Cibersegurança no Setor Financeiro',
+        'Ecossistemas de Inovação e Empreendedorismo',
+        'Engenharia Social com IA (Phishing)',
+        'Fundamentos e arquitetura da Deepweb',
+        'Gestão de Incidentes e Resposta a Crises Cibernéticas',
+        'Gestão de Riscos Cibernéticos',
+        'Inteligência Artificial & Machine Learning',
+        'Maturidade em Gestão de Riscos',
+      ],
+    },
+  ];
+
+  const mod = modules[active];
+
+  return (
+    <section className="lp-section section-deep alt" id="programa">
+      <div className="hud-overlay" aria-hidden="true">
+        <div className="hud-corner tl">
+          <SerialTag system="PRG" prefix="MODULE" />
+          <MicroBarcode seed="programa-tl" bars={16} height={20} />
+        </div>
+        <div className="hud-corner tr">
+          <VersionBlock system="PRG" env="LIVE" />
+        </div>
+        <div className="hud-corner br">
+          <BinaryStrip length={24} seed="prg-br" />
+        </div>
+      </div>
+
+      <div className="container">
+        <SectionHeader
+          tone="deep"
+          eyebrow="05 · Programa do Curso"
+          title={<>Grade curricular<br /><span className="muted">MBA em Cibersegurança USP/Esalq</span></>} />
+      </div>
+
+      <div className="programa-tabs-wrap">
+        <div className="programa-tabs" role="tablist" aria-label="Módulos do curso">
+          {modules.map((m, i) =>
+            <button
+              key={m.id}
+              role="tab"
+              aria-selected={active === i}
+              className={`programa-tab${active === i ? ' is-active' : ''}`}
+              onClick={() => setActive(i)}>
+              <span className="programa-tab-num" aria-hidden="true">{String(i).padStart(2, '0')}</span>
+              <span className="programa-tab-label">{m.label}</span>
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="container">
+        <RevealOnScroll delay={80}>
+          <div className="programa-panel">
+            <div className="programa-panel-hd">
+              <div className="programa-panel-hd-left">
+                <span className="programa-panel-mod-num" aria-hidden="true">
+                  {active === 0 ? 'PRÉ' : `M${String(active).padStart(2, '0')}`}
+                </span>
+                <div className="programa-panel-hd-info">
+                  <span className="programa-panel-hd-tag">{mod.tag}</span>
+                  <span className="programa-panel-hd-label">{mod.label}</span>
+                </div>
+              </div>
+              {!mod.isSchedule && (
+                <div className="programa-panel-hd-count" aria-label={`${mod.items.length} disciplinas`}>
+                  <span className="programa-panel-hd-count-n">{mod.items.length}</span>
+                  <span className="programa-panel-hd-count-l">disciplinas</span>
+                </div>
+              )}
+            </div>
+
+            {mod.isSchedule ? (
+              <>
+                <p className="programa-panel-desc">{mod.desc}</p>
+                <div className="programa-schedule">
+                  {mod.items.map((item, i) =>
+                    <div key={i} className="programa-schedule-item">
+                      <span className="programa-schedule-idx" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                      <span className="programa-schedule-date">{item.date}</span>
+                      <span className="programa-schedule-name">{item.title}</span>
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <ul className="programa-disciplines">
+                {mod.items.map((item, i) =>
+                  <li key={i} className="programa-discipline">
+                    <span className="programa-disc-idx" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                    <span className="programa-disc-text">{item}</span>
+                  </li>
+                )}
+              </ul>
+            )}
+          </div>
+        </RevealOnScroll>
+
+        <RevealOnScroll delay={160}>
+          <p className="programa-contact ds-caption">
+            Em caso de dúvidas sobre o programa do curso, entre em contato pelo e-mail{' '}
+            <a href="mailto:info@mbauspesalq.com">info@mbauspesalq.com</a>
+          </p>
+        </RevealOnScroll>
+      </div>
+    </section>);
+
+}
+
+/* ────────────────────────────────────────────────────────────────────── *\
  *  CORPO DOCENTE — múltiplos professores (clear, dot-pattern)
  *  Conteúdo: time editorial preenche. Layout escala 4-8+ docentes.
 \* ────────────────────────────────────────────────────────────────────── */
@@ -480,7 +654,7 @@ function CorpoDocente() {
       <DotPattern />
       <div className="container">
         <SectionHeader
-          eyebrow="05 · Corpo docente"
+          eyebrow="06 · Corpo docente"
           title={<>Professores doutores USP<br /><span className="muted">+ especialistas do mercado</span></>}
           right={navButtons} />
       </div>
@@ -490,19 +664,19 @@ function CorpoDocente() {
           {profs.map((p, i) =>
             <article key={i} className="docente-card">
               <div className="docente-photo" aria-hidden="true">
-                <div className="docente-photo-corners hud-overlay" aria-hidden="true">
+                <div className="docente-photo-corners" aria-hidden="true">
                   <span className="docente-corner tl" />
                   <span className="docente-corner tr" />
                   <span className="docente-corner bl" />
                   <span className="docente-corner br" />
                 </div>
                 <span className="docente-photo-label">[PHOTO]</span>
-                <span className="docente-photo-id hud-overlay" aria-hidden="true">ID · {String(i + 1).padStart(2, '0')}</span>
+                <span className="docente-photo-id" aria-hidden="true">ID · {String(i + 1).padStart(2, '0')}</span>
               </div>
               <div className="docente-info">
                 <div className="docente-meta-bar" aria-hidden="true">
                   <span className="docente-type">{p.tag}</span>
-                  <span className="docente-status hud-overlay">
+                  <span className="docente-status">
                     <span className="docente-status-dot" />
                     ATIVO
                   </span>
@@ -591,7 +765,7 @@ function USPSeal() {
             </defs>
             <text className="usp-seal-text">
               <textPath href="#usp-seal-text-path" startOffset="0" textLength="490" lengthAdjust="spacing">
-                USP · ESALQ · MBA EM CYBERSEGURANÇA · EST. 2026 ·{' '}
+                USP · ESALQ · MBA EM CIBERSEGURANÇA · EST. 2026 ·{' '}
               </textPath>
             </text>
           </svg>
@@ -747,7 +921,7 @@ function Investimento({ tempero = true }) {
       <div className="container">
         <SectionHeader
           tone="deep"
-          eyebrow="06 · Investimento"
+          eyebrow="07 · Investimento"
           title={<>Preço MBA em Cibersegurança<br /><span className="muted">e planos de investimento</span></>} />
         
 
@@ -865,7 +1039,7 @@ function FAQ() {
     <section className="lp-section section-light" id="faq">
       <div className="container faq-container">
         <SectionHeader
-          eyebrow="07 · FAQ"
+          eyebrow="08 · FAQ"
           title={<>Perguntas frequentes<br /><span className="muted">sobre a pós-graduação em Cibersegurança</span></>} />
         
         <div className="faq-list">
@@ -935,7 +1109,7 @@ function CTA({ dotGap = 22, dotSize = 1.4, showDots = true }) {
       </div>
       <div className="container cta-container">
         <RevealOnScroll>
-          <span className="eyebrow">08 · Inscrição</span>
+          <span className="eyebrow">09 · Inscrição</span>
         </RevealOnScroll>
         <RevealOnScroll delay={80}>
           <h2 className="cta-title">
@@ -1177,6 +1351,6 @@ function SectionHeader({ eyebrow, title, right, tone = 'light' }) {
 
 Object.assign(window, {
   Hero, Vision,
-  Mercado, Carreira, Diferenciais, CorpoDocente, Perfil, Investimento,
+  Mercado, Carreira, Diferenciais, Perfil, Programa, CorpoDocente, Investimento,
   FAQ, CTA, Footer, SectionHeader
 });
