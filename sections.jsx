@@ -21,12 +21,12 @@
  *  HERO
 \* ────────────────────────────────────────────────────────────────────── */
 
-function Hero({ gridIntensity = 'off' }) {
+function Hero({ gridIntensity = 'off', primaryRgb }) {
   return (
     <section className="lp-section hero" id="hero">
       <img className="hero-image" src="assets/placeholder-hero.png" alt="" aria-hidden="true" />
       <div className="hero-bg" aria-hidden="true">
-        <InteractiveGrid cellSize={56} intensity={gridIntensity} />
+        <InteractiveGrid cellSize={56} intensity={gridIntensity} primaryRgb={primaryRgb} />
       </div>
 
       <div className="container hero-inner">
@@ -41,8 +41,8 @@ function Hero({ gridIntensity = 'off' }) {
             <h1 className="hero-title">
               <span className="hero-title-line">MBA em Cibersegurança</span>
               <span className="hero-title-line">
+                <span className="hero-title-muted">Pós-graduação </span>
                 <span className="hero-keyword">USP/Esalq</span>
-                <span className="hero-title-muted"> / pós-graduação em Cyber Security</span>
               </span>
             </h1>
           </RevealOnScroll>
@@ -65,28 +65,26 @@ function Hero({ gridIntensity = 'off' }) {
               </CyButton>
             </div>
           </RevealOnScroll>
-
-          <RevealOnScroll delay={320}>
-            <dl className="hero-stats">
-              <div>
-                <dt>Salário máx. CSO</dt>
-                <dd>R$ 52k</dd>
-                <span className="ds-caption-micro">Robert Half · 2026</span>
-              </div>
-              <div>
-                <dt>Vagas até 2034</dt>
-                <dd>+29%</dd>
-                <span className="ds-caption-micro">BLS · 2024</span>
-              </div>
-              <div>
-                <dt>Déficit BR</dt>
-                <dd>750k</dd>
-                <span className="ds-caption-micro">Fortinet</span>
-              </div>
-            </dl>
-          </RevealOnScroll>
         </div>
       </div>
+
+      <dl className="hero-stats">
+        <div>
+          <dt>Salário máx. CSO</dt>
+          <dd>R$ 52k</dd>
+          <span className="ds-caption-micro">Robert Half · 2026</span>
+        </div>
+        <div>
+          <dt>Vagas até 2034</dt>
+          <dd>+29%</dd>
+          <span className="ds-caption-micro">BLS · 2024</span>
+        </div>
+        <div>
+          <dt>Déficit BR</dt>
+          <dd>750k</dd>
+          <span className="ds-caption-micro">Fortinet</span>
+        </div>
+      </dl>
     </section>);
 
 }

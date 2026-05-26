@@ -20,22 +20,25 @@ function InteractiveGrid({
   cellSize = 56,
   intensity = 'normal', // 'off' | 'subtle' | 'normal' | 'strong'
   className = '',
+  primaryRgb: primaryRgbProp, // Prop takes priority to avoid CSS-read flash on load
 }) {
   const wrapRef = useRefBg(null);
   const [cells, setCells] = useStateBg({ cols: 0, rows: 0 });
   const [mouse, setMouse] = useStateBg({ x: -9999, y: -9999, inside: false });
   const reduced = useRefBg(false);
-  const [primaryRgb, setPrimaryRgb] = useStateBg(
+  const [cssRgb, setCssRgb] = useStateBg(
     () => getComputedStyle(document.documentElement).getPropertyValue('--color-primary-rgb').trim() || '0, 203, 201'
   );
+  const primaryRgb = primaryRgbProp || cssRgb;
 
   useEffectBg(() => {
-    const sync = () => setPrimaryRgb(
+    if (primaryRgbProp) return; // prop-driven — no need to sync from CSS
+    const sync = () => setCssRgb(
       getComputedStyle(document.documentElement).getPropertyValue('--color-primary-rgb').trim() || '0, 203, 201'
     );
     window.addEventListener('tweakchange', sync);
     return () => window.removeEventListener('tweakchange', sync);
-  }, []);
+  }, [primaryRgbProp]);
 
   // Medir grid e respeitar reduced-motion
   useEffectBg(() => {

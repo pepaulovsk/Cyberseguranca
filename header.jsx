@@ -124,6 +124,7 @@ function pluralizeCursos(n) {
 
 function Header() {
   const [isScrolled,      setIsScrolled]      = React.useState(false);
+  const [isHidden,        setIsHidden]        = React.useState(false);
   const [isDrawerOpen,    setIsDrawerOpen]    = React.useState(false);
   const [isMegaOpen,      setIsMegaOpen]      = React.useState(false);
   const [activeCategory,  setActiveCategory]  = React.useState(MEGAMENU_CATEGORIES[0].id);
@@ -145,11 +146,21 @@ function Header() {
   /* ── scroll listener ─────────────────────────────────────────────── */
   React.useEffect(() => {
     let ticking = false;
+    let prevY = window.scrollY;
     function onScroll() {
       if (ticking) return;
       ticking = true;
       requestAnimationFrame(() => {
-        setIsScrolled(window.scrollY > 0);
+        const y = window.scrollY;
+        setIsScrolled(y > 0);
+        if (y <= 0) {
+          setIsHidden(false);
+        } else if (y > prevY && y > 80) {
+          setIsHidden(true);
+        } else if (y < prevY) {
+          setIsHidden(false);
+        }
+        prevY = y;
         ticking = false;
       });
     }
@@ -233,7 +244,7 @@ function Header() {
     <>
       <header
         ref={headerRef}
-        className={`lp-header${isScrolled ? ' is-scrolled' : ''}`}
+        className={`lp-header${isScrolled ? ' is-scrolled' : ''}${isHidden ? ' is-hidden' : ''}`}
         data-state={isScrolled ? 'scrolled' : 'top'}
       >
         <div className="container lp-header-inner">
