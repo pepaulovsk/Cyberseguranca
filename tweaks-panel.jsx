@@ -281,7 +281,7 @@ function useTweaks(defaults) {
 // (__activate_edit_mode / __deactivate_edit_mode) and posts
 // __edit_mode_available / __edit_mode_dismissed in response.
 function TweaksPanel({ title = 'Tweaks', children }) {
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
 
   React.useEffect(() => {
     const onMsg = (e) => {
