@@ -286,13 +286,13 @@
       color: var(--color-brand);
       background: rgba(var(--color-brand-rgb), 0.06);
       border: 1px solid rgba(var(--color-brand-rgb), 0.22);
-      border-radius: 999px;
+      border-radius: calc(var(--radius-lg) * 0.5);
     }
     .eyebrow::before {
       content: '';
       width: 6px;
       height: 6px;
-      border-radius: 999px;
+      border-radius: 50%;
       background: var(--color-brand);
       flex-shrink: 0;
     }

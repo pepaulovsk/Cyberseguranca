@@ -978,13 +978,19 @@ function Investimento({ tempero = true }) {
         </div>
 
         <RevealOnScroll delay={160}>
-          <div className="roi-callout roi-callout-deep">
-            <span className="eyebrow">Cálculo do ROI</span>
-            <p>
-              Com mensalidades a partir de R$597/mês ao longo de 22 meses, o investimento total é de 
-              <strong>~R$13.134</strong>. Um Analista Sênior promovido a Coordenador passa a ganhar
-              a partir de R$5.900/mês. <strong>O investimento se paga em aproximadamente 3 meses</strong>.
-            </p>
+          <div className={`roi-callout roi-callout-deep${tempero ? ' is-spiced' : ''}`}>
+            <div className="roi-callout-metric" aria-hidden="true">
+              <span className="roi-callout-number">~3</span>
+              <span className="roi-callout-unit">meses</span>
+            </div>
+            <div className="roi-callout-body">
+              <span className="eyebrow">Cálculo do ROI</span>
+              <p>
+                Com mensalidades a partir de R$597/mês ao longo de 22 meses, o investimento total é de
+                <strong>~R$13.134</strong>. Um Analista Sênior promovido a Coordenador passa a ganhar
+                a partir de R$5.900/mês. <strong>O investimento se paga em aproximadamente 3 meses</strong>.
+              </p>
+            </div>
           </div>
         </RevealOnScroll>
       </div>

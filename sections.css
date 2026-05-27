@@ -842,6 +842,8 @@ section.lp-section.hero { padding-bottom: 0; }
   padding: 0;
   border: 1px solid rgba(var(--color-primary-rgb), 0.22);
   border-bottom: 0;
+  border-top-left-radius: var(--curso-radius-lg);
+  border-top-right-radius: var(--curso-radius-lg);
   background: var(--color-deep);
   animation: hero-stats-in 0.7s 1s both var(--ease-out);
 }
@@ -2047,16 +2049,93 @@ section.lp-section.hero { padding-bottom: 0; }
   line-height: 1.55;
 }
 .roi-callout-deep {
-  background: rgba(var(--color-primary-rgb), 0.08);
-  border-color: rgba(var(--color-primary-rgb), 0.3);
+  grid-template-columns: auto 1fr;
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
+  background: rgba(var(--color-primary-rgb), 0.10);
+  border-color: rgba(var(--color-primary-rgb), 0.5);
   margin-top: var(--space-12);
+  position: relative;
+  overflow: hidden;
 }
-.roi-callout-deep p { color: var(--color-text-on-deep); }
+.roi-callout-deep.is-spiced {
+  box-shadow:
+    0 0 0 1px rgba(var(--color-primary-rgb), 0.12),
+    0 16px 48px -20px rgba(var(--color-primary-rgb), 0.35);
+}
+.roi-callout-deep.is-spiced::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--color-primary);
+  opacity: 0.8;
+  box-shadow: 0 0 16px 0 rgba(var(--color-primary-rgb), 0.6);
+  z-index: 1;
+}
+.roi-callout-metric {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: var(--space-6) var(--space-8);
+  border-right: 1px solid rgba(var(--color-primary-rgb), 0.22);
+  background: rgba(var(--color-primary-rgb), 0.07);
+  flex-shrink: 0;
+}
+.roi-callout-number {
+  font-family: var(--font-heading);
+  font-size: clamp(2.75rem, 4vw + 1rem, 4.5rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--color-primary);
+  font-variant-numeric: tabular-nums;
+}
+.roi-callout-unit {
+  font-family: var(--font-ui);
+  font-size: var(--fs-caption);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  opacity: 0.65;
+}
+.roi-callout-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-6) var(--space-8);
+  justify-content: center;
+}
+.roi-callout-deep p {
+  color: var(--color-text-on-deep);
+  margin: 0;
+}
 @media (max-width: 880px) {
   .roi-callout {
     grid-template-columns: 1fr;
     gap: var(--space-4);
     padding: var(--space-5);
+  }
+  .roi-callout-deep {
+    grid-template-columns: 1fr;
+  }
+  .roi-callout-metric {
+    border-right: none;
+    border-bottom: 1px solid rgba(var(--color-primary-rgb), 0.22);
+    padding: var(--space-5) var(--space-5) var(--space-4);
+    flex-direction: row;
+    gap: var(--space-2);
+    align-items: baseline;
+    justify-content: flex-start;
+  }
+  .roi-callout-number {
+    font-size: clamp(2rem, 8vw, 2.75rem);
+  }
+  .roi-callout-body {
+    padding: var(--space-4) var(--space-5);
   }
 }
 
@@ -2575,7 +2654,7 @@ section.lp-section.hero { padding-bottom: 0; }
   gap: var(--space-3);
   justify-content: center;
   font-size: var(--fs-caption);
-  color: var(--ds-color-caption);
+color: var(--ds-color-caption);
 }
 
 /* ── ALUMNI TICKER (dentro de Perfil) ─────────────────────────────── */
