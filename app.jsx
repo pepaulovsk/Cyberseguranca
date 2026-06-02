@@ -245,6 +245,7 @@ function App() {
 
   return (
     <>
+      <TopBanner />
       <Header />
       <main>
         <Hero gridIntensity={t.tempero ? t.gridIntensity : 'off'} primaryRgb={hexToRgbChannels(t.cursoPrimary) || '0, 203, 201'} />

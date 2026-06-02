@@ -3,6 +3,147 @@
  * Todas as cores/spacing/radius vêm de CSS variables em :root.
  * ────────────────────────────────────────────────────────────────── */
 
+/* ── TOP BANNER ───────────────────────────────────────────────────────
+ * Banner fixo acima da navbar com countdown de turma e CTA primário.
+ * Gerencia --banner-h via ResizeObserver no componente TopBanner;
+ * o .lp-header lê essa variável para se posicionar corretamente.
+ */
+.top-banner {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 101;
+  background: var(--mba-color, #0d3db2);
+  color: #fff;
+  font-family: 'Poppins', system-ui, sans-serif;
+}
+.top-banner-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 10px 56px 10px var(--container-padding, 24px);
+  max-width: var(--container-max, 1280px);
+  margin: 0 auto;
+  min-height: 44px;
+  box-sizing: border-box;
+}
+.top-banner-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.top-banner-badge {
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.30);
+  border-radius: var(--radius-sm, 6px);
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.top-banner-label {
+  font-size: 13px;
+  color: rgba(255,255,255,0.78);
+  white-space: nowrap;
+}
+.top-banner-countdown {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.top-banner-sep {
+  color: rgba(255,255,255,0.30);
+  font-size: 14px;
+  user-select: none;
+}
+.top-banner-unit {
+  display: flex;
+  align-items: baseline;
+  gap: 1px;
+}
+.top-banner-num {
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+  font-size: 14px;
+  font-weight: 700;
+  display: inline-block;
+  min-width: 2ch;
+  text-align: center;
+  letter-spacing: 0;
+}
+.top-banner-lbl {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.50);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.top-banner-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  background: #fff;
+  color: var(--mba-color, #0d3db2);
+  font-family: 'Poppins', system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: var(--radius-md, 10px);
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: opacity var(--duration-fast, 150ms) var(--ease-out);
+  line-height: 1.2;
+}
+.top-banner-cta:hover { opacity: 0.88; }
+.top-banner-cta:focus-visible {
+  outline: 2px solid rgba(255,255,255,0.65);
+  outline-offset: 2px;
+}
+.top-banner-close {
+  /* Posicionado relativo ao .top-banner (position:fixed) para garantir
+     visibilidade independente do max-width do inner container. */
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px; height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(255,255,255,0.75);
+  border-radius: var(--radius-sm, 6px);
+  transition: color var(--duration-fast, 150ms), background var(--duration-fast, 150ms);
+  line-height: 0;
+  padding: 0;
+}
+.top-banner-close:hover { color: #fff; background: rgba(255,255,255,0.15); }
+.top-banner-close:focus-visible {
+  outline: 2px solid rgba(255,255,255,0.45);
+  outline-offset: 2px;
+}
+@media (max-width: 600px) {
+  .top-banner-badge,
+  .top-banner-cta { display: none; }
+  .top-banner-inner {
+    padding: 10px 52px;
+    justify-content: center;
+    flex-wrap: nowrap;
+    min-height: auto;
+  }
+  .top-banner-content {
+    flex: none;
+    justify-content: center;
+    gap: 8px;
+  }
+}
+
 /* ── HEADER ──────────────────────────────────────────────────────────
  * Cópia fiel da navbar de mbauspesalq.com:
  *   • Dual-state (transparente sobre o hero deep, sólido com border ao scroll).
@@ -30,7 +171,7 @@
   --nav-hover-bg:       rgba(0, 0, 0, 0.05);
 
   position: fixed;
-  top: 0;
+  top: var(--banner-h, 0px);
   left: 0;
   right: 0;
   z-index: 100;
@@ -52,7 +193,7 @@
   border-bottom-color: #ddd;
 }
 .lp-header.is-hidden {
-  transform: translateY(-100%);
+  transform: translateY(calc(-100% - var(--banner-h, 0px)));
 }
 
 .lp-header-inner {
@@ -742,15 +883,15 @@
 }
 
 /* ── HERO ──────────────────────────────────────────────────────────── */
-section.lp-section.hero { padding-bottom: 0; }
+/* Especificidade > .lp-section para garantir que padding-bottom não seja sobrescrito */
+section.lp-section.hero { padding-bottom: 173px; }
 .hero {
   position: relative;
   overflow: hidden;
   isolation: isolate;
   background: var(--color-deep);
   color: var(--color-text-on-deep);
-  padding-top: var(--space-20);
-  padding-bottom: 0;
+  padding-top: calc(116px + var(--banner-h, 0px));
   min-height: 90vh;
   min-height: 90dvh;
   display: flex;
@@ -815,7 +956,7 @@ section.lp-section.hero { padding-bottom: 0; }
   font-weight: 500;
 }
 .hero-lead {
-  font-size: var(--fs-body-lg);
+  font-size: clamp(1rem, 0.78125vw + 0.625rem, 1.25rem);
   color: var(--ds-color-body);
   max-width: 72ch;
   line-height: 1.65;
@@ -832,9 +973,11 @@ section.lp-section.hero { padding-bottom: 0; }
   margin-top: var(--space-2);
 }
 .hero-stats {
-  position: relative;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
   z-index: 3;
-  width: 100%;
   max-width: 800px;
   margin: 0 auto;
   display: grid;
@@ -859,8 +1002,10 @@ section.lp-section.hero { padding-bottom: 0; }
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 5px;
-  padding: 1.5rem 1rem;
+  height: 132px;
+  padding: 0 1rem;
   border-right: 1px solid rgba(255, 255, 255, 0.055);
   min-width: 0;
   overflow: hidden;
@@ -907,14 +1052,14 @@ section.lp-section.hero { padding-bottom: 0; }
   .hero-image { background-position: center; }
 }
 @media (max-width: 768px) {
-  .hero {
-    padding-top: var(--space-14);
-  }
-  .hero-stats > div { padding: 1.1rem 0.75rem; }
+  .hero { padding-top: calc(113px + var(--banner-h, 0px)); }
+  section.lp-section.hero { padding-bottom: 141px; }
+  .hero-stats > div { height: 100px; padding: 0 0.75rem; }
   .hero-stats dd { font-size: 1.875rem; }
 }
 @media (max-width: 420px) {
-  .hero-stats > div { padding: 0.9rem 0.4rem; }
+  section.lp-section.hero { padding-bottom: 129px; }
+  .hero-stats > div { height: 88px; padding: 0 0.4rem; }
   .hero-stats dd { font-size: 1.5rem; }
   .hero-stats dt { font-size: 0.5rem; letter-spacing: 0.14em; }
 }

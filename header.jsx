@@ -618,3 +618,128 @@ function Header() {
 }
 
 window.Header = Header;
+
+/* ── TOP BANNER ──────────────────────────────────────────────────────
+ * Banner fixo acima da navbar. Não some com scroll.
+ * Atualiza --banner-h em :root via ResizeObserver para que o
+ * .lp-header e o .hero se compensem automaticamente.
+ */
+const BANNER_TARGET_DATE = new Date('2026-09-15T08:00:00-03:00');
+const BANNER_CTA_HREF = `${NAV_BASE}/cursos/mba-cyberseguranca`;
+const BANNER_STORAGE_KEY = 'mba-cyber-banner-v1-dismissed';
+
+function calcBannerTimeLeft() {
+  const diff = BANNER_TARGET_DATE.getTime() - Date.now();
+  if (diff <= 0) return null;
+  return {
+    d: Math.floor(diff / 86400000),
+    h: Math.floor((diff % 86400000) / 3600000),
+    m: Math.floor((diff % 3600000) / 60000),
+    s: Math.floor((diff % 60000) / 1000),
+  };
+}
+
+function TopBanner() {
+  const [visible, setVisible] = React.useState(() => {
+    try { return !localStorage.getItem(BANNER_STORAGE_KEY); }
+    catch { return true; }
+  });
+  const [timeLeft, setTimeLeft] = React.useState(calcBannerTimeLeft);
+  const bannerRef = React.useRef(null);
+
+  /* Mantém --banner-h sincronizado com a altura real do banner */
+  React.useEffect(() => {
+    const root = document.documentElement;
+    function sync() {
+      root.style.setProperty(
+        '--banner-h',
+        (visible && bannerRef.current)
+          ? bannerRef.current.getBoundingClientRect().height + 'px'
+          : '0px'
+      );
+    }
+    sync();
+    if (!visible) return;
+    const ro = new ResizeObserver(sync);
+    if (bannerRef.current) ro.observe(bannerRef.current);
+    return () => ro.disconnect();
+  }, [visible]);
+
+  /* Ticker do countdown */
+  React.useEffect(() => {
+    if (!visible) return;
+    const id = setInterval(() => {
+      const t = calcBannerTimeLeft();
+      setTimeLeft(t);
+      if (!t) clearInterval(id);
+    }, 1000);
+    return () => clearInterval(id);
+  }, [visible]);
+
+  function dismiss() {
+    setVisible(false);
+    try { localStorage.setItem(BANNER_STORAGE_KEY, '1'); } catch {}
+  }
+
+  if (!visible || !timeLeft) return null;
+
+  const pad = (n) => String(n).padStart(2, '0');
+
+  return (
+    <div className="top-banner" ref={bannerRef} role="region" aria-label="Aviso de turma">
+      <div className="top-banner-inner">
+        <div className="top-banner-content">
+          <span className="top-banner-badge">Turma 2026.2</span>
+          <span className="top-banner-label">Início em</span>
+          <div
+            className="top-banner-countdown"
+            aria-live="off"
+            aria-label={`${timeLeft.d} dias, ${timeLeft.h} horas, ${timeLeft.m} minutos e ${timeLeft.s} segundos`}
+          >
+            <div className="top-banner-unit">
+              <span className="top-banner-num">{pad(timeLeft.d)}</span>
+              <span className="top-banner-lbl">D</span>
+            </div>
+            <span className="top-banner-sep" aria-hidden="true">:</span>
+            <div className="top-banner-unit">
+              <span className="top-banner-num">{pad(timeLeft.h)}</span>
+              <span className="top-banner-lbl">H</span>
+            </div>
+            <span className="top-banner-sep" aria-hidden="true">:</span>
+            <div className="top-banner-unit">
+              <span className="top-banner-num">{pad(timeLeft.m)}</span>
+              <span className="top-banner-lbl">M</span>
+            </div>
+            <span className="top-banner-sep" aria-hidden="true">:</span>
+            <div className="top-banner-unit">
+              <span className="top-banner-num">{pad(timeLeft.s)}</span>
+              <span className="top-banner-lbl">S</span>
+            </div>
+          </div>
+        </div>
+
+        <a
+          className="top-banner-cta"
+          href={BANNER_CTA_HREF}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Garantir vaga
+          <Icon name="ArrowRight" size={13} />
+        </a>
+
+      </div>
+
+      <button
+        className="top-banner-close"
+        type="button"
+        onClick={dismiss}
+        aria-label="Fechar aviso de turma"
+      >
+        <Icon name="Close" size={15} />
+      </button>
+    </div>
+  );
+}
+
+window.TopBanner = TopBanner;
