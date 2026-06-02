@@ -24,7 +24,7 @@
 function Hero({ gridIntensity = 'off', primaryRgb }) {
   return (
     <section className="lp-section hero" id="hero">
-      <img className="hero-image" src="assets/placeholder-hero.png" alt="" aria-hidden="true" />
+      <img className="hero-image" src="assets/placeholder-hero-purple.png" alt="" aria-hidden="true" />
       <div className="hero-bg" aria-hidden="true">
         <InteractiveGrid cellSize={56} intensity={gridIntensity} primaryRgb={primaryRgb} />
       </div>
