@@ -80,7 +80,7 @@ function Hero({ gridIntensity = 'off', primaryRgb }) {
           <span className="ds-caption-micro">BLS · 2024</span>
         </div>
         <div>
-          <dt>Déficit BR</dt>
+          <dt>Déficit de vagas</dt>
           <dd>750k</dd>
           <span className="ds-caption-micro">Fortinet</span>
         </div>
@@ -627,10 +627,10 @@ function CorpoDocente() {
   { name: <>Adriana {/* Cristina Ferreira */} Caldana</>, role: 'Representante brasileira no ExPeG-PRME (ONU) e TEDx Speaker', tag: 'USP · ESALQ', photo: 'assets/professores/adriana-caldana-200x300.jpg' },
   { name: <>Cristina {/* Godoy Bernardo de */} Oliveira</>, role: 'PI do Centro de IA USP-IBM-Fapesp', tag: 'USP · IBM · Fapesp', photo: 'assets/professores/Cristina Godoy.jpg' },
   { name: <>Fabiano {/* Guasti */} Lima</>, role: 'Livre-Docente em Métodos Quantitativos e Finanças · Pesquisador Fapesp', tag: 'USP · Fapesp', photo: 'assets/professores/Faiano Guasti Lima.jpg' },
-  { name: <>Felipe {/* Mendes */} Borini</>, role: 'Pesquisador Sênior Glorad · Especialista em Inovação e Ecossistemas Tecnológicos', tag: 'USP · Glorad' },
+  { name: <>Felipe {/* Mendes */} Borini</>, role: 'Pesquisador Sênior Glorad · Especialista em Inovação e Ecossistemas Tecnológicos', tag: 'USP · Glorad', photo: 'assets/professores/felipe-borini.jpg' },
   { name: <>Fernando {/* de Souza */} Coelho</>, role: 'Especialista em Políticas Públicas e Governança', tag: 'Gov. Pública', photo: 'assets/professores/Fernando Coelho.jpg' },
   { name: <>Fábio {/* Miguel */} Junges</>, role: 'CEO da SOU.cloud Serviços Gerenciados', tag: 'Indústria', photo: 'assets/professores/Fabio Junges.jpeg' },
-  { name: <>Jaime {/* Simão */} Sichman</>, role: 'Doutor em Inteligência Artificial · Distinguished Speaker ACM', tag: 'USP · IA' },
+  { name: <>Jaime {/* Simão */} Sichman</>, role: 'Doutor em Inteligência Artificial · Distinguished Speaker ACM', tag: 'USP · IA', photo: 'assets/professores/jaime-sichman.jpg' },
   { name: <>Bruno {/* Antunes */} Kadri</>, role: 'CTO no Pecege · Especialista em Gestão de Produtos, Pessoas e Engenharia de Software', tag: 'Pecege', photo: 'assets/professores/Bruno Kadri.png' },
   { name: 'Daniel Donda', role: 'CEO e fundador da Hackers Hive', tag: 'Indústria', photo: 'assets/professores/Daniel Donda.png' },
   // { name: <>Matheus {/* Borguete de */} Souza</>, role: 'CMO no Pecege · Líder das áreas de Produtos e de Segurança e Governança no Pecege', tag: 'Pecege' }
@@ -875,30 +875,31 @@ function Investimento({ tempero = true }) {
     tag: 'Plano Nacional',
     price: 'R$597',
     cadence: '/mês',
-    total: 'Total R$ 13.134 em 22 parcelas',
-    featured: false,
+    total: 'Total R$ 13.134',
+    featured: true,
     items: [
-    'Certificado USP — válido em todo o Brasil',
-    'Aulas ao vivo com professores doutores USP + gravações (acesso vitalício)',
-    'App mobile com acesso offline',
-    'Legendas em PT via IA Skylar',
-    'Business Case + orientação acadêmica']
+    'Aulas ao vivo, gravadas e legendadas',
+    'Provas online',
+    'Interação no chat com a turma',
+    'Acesso ao aplicativo MBX',
+    'Atendimento, orientação acadêmica, produção e apresentação do BC em PT-BR']
 
   },
   {
     id: 'internacional',
-    tag: 'Plano Internacional',
-    price: 'R$944,64',
+    tag: 'Plano Select',
+    price: 'R$780',
     cadence: '/mês',
-    total: 'Total R$ 20.782 em 22 parcelas',
-    featured: true,
+    total: 'Total R$ 17.160',
+    featured: false,
     items: [
-    'Materiais em EN e ES incluídos',
-    'Certificado USP — reconhecimento global',
-    'Aulas ao vivo com professores doutores USP + gravações (acesso vitalício)',
-    'App mobile com acesso offline',
-    'Legendas em PT, EN e ES via IA Skylar',
-    'Business Case + orientação acadêmica']
+    'Aulas ao vivo, gravadas e legendadas',
+    'Provas online',
+    'Interação no chat com a turma',
+    'Acesso ao aplicativo MBX',
+    'Atendimento, orientação acadêmica, produção e apresentação do BC em PT-BR',
+    'Envio internacional da lembrança',
+    'Certificado apostilado (Haia)']
 
   }];
 
@@ -949,10 +950,10 @@ function Investimento({ tempero = true }) {
                       </div>
                     )}
                   </div>
-                  {plan.featured && <CyBadge tone="primary" dot>Reconhecimento global</CyBadge>}
+                  {plan.featured && <CyBadge tone="primary" dot>Melhor escolha</CyBadge>}
                 </header>
                 <div className="plan-price">
-                  <span className="plan-price-prefix ds-caption">a partir de</span>
+                  <span className="plan-price-prefix ds-caption">22x de</span>
                   <span className="plan-price-value">{plan.price}<small>{plan.cadence}</small></span>
                   <span className="plan-price-total ds-caption">{plan.total}</span>
                 </div>
