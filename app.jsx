@@ -105,7 +105,16 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "mercadoLightIntensity": "medium",
   "mercadoLightWidth":     2,
   "dotGap":                32,
-  "dotSize":               1.5
+  "dotSize":               1.5,
+  "dotFieldDotRadius":       3,
+  "dotFieldDotSpacing":      32,
+  "dotFieldCursorRadius":    500,
+  "dotFieldBulgeOnly":       true,
+  "dotFieldBulgeStrength":   67,
+  "dotFieldSparkle":         false,
+  "dotFieldWaveAmplitude":   0,
+  "dotFieldGradFromOpacity": 35,
+  "dotFieldGradToOpacity":   25
 }/*EDITMODE-END*/;
 
 // Row: font selector + color picker stacked
@@ -248,7 +257,19 @@ function App() {
       <TopBanner />
       <Header />
       <main>
-        <Hero gridIntensity={t.tempero ? t.gridIntensity : 'off'} primaryRgb={hexToRgbChannels(t.cursoPrimary) || '0, 203, 201'} />
+        <Hero
+          gridIntensity={t.tempero ? t.gridIntensity : 'off'}
+          primaryRgb={hexToRgbChannels(t.cursoPrimary) || '0, 203, 201'}
+          dotFieldDotRadius={t.dotFieldDotRadius}
+          dotFieldDotSpacing={t.dotFieldDotSpacing}
+          dotFieldCursorRadius={t.dotFieldCursorRadius}
+          dotFieldBulgeOnly={t.dotFieldBulgeOnly}
+          dotFieldBulgeStrength={t.dotFieldBulgeStrength}
+          dotFieldSparkle={t.dotFieldSparkle}
+          dotFieldWaveAmplitude={t.dotFieldWaveAmplitude}
+          dotFieldGradientFrom={hexToRgba(t.cursoPrimary, t.dotFieldGradFromOpacity)}
+          dotFieldGradientTo={hexToRgba(t.cursoPrimary, t.dotFieldGradToOpacity)}
+        />
         <Vision />
         <Mercado />
         <Carreira />
@@ -258,7 +279,18 @@ function App() {
         <CorpoDocente />
         <Investimento tempero={t.tempero} />
         <FAQ />
-        <CTA dotGap={t.dotGap} dotSize={t.dotSize} showDots={t.tempero} />
+        <CTA
+          dotFieldDotRadius={t.dotFieldDotRadius}
+          dotFieldDotSpacing={t.dotFieldDotSpacing}
+          dotFieldCursorRadius={t.dotFieldCursorRadius}
+          dotFieldBulgeOnly={t.dotFieldBulgeOnly}
+          dotFieldBulgeStrength={t.dotFieldBulgeStrength}
+          dotFieldSparkle={t.dotFieldSparkle}
+          dotFieldWaveAmplitude={t.dotFieldWaveAmplitude}
+          dotFieldGradientFrom={hexToRgba(t.cursoPrimary, t.dotFieldGradFromOpacity)}
+          dotFieldGradientTo={hexToRgba(t.cursoPrimary, t.dotFieldGradToOpacity)}
+          showDotField={t.tempero}
+        />
       </main>
       <Footer />
 
@@ -334,14 +366,43 @@ function App() {
                   onChange={(v) => setTweak('tempero', v)} />
                 {t.tempero && (
                   <>
-                    <TweakSelect label="Grid" value={t.gridIntensity}
+                    <TweakSelect label="Hero BG" value={t.gridIntensity}
                       onChange={(v) => setTweak('gridIntensity', v)}
                       options={[
-                        { value: 'off',    label: 'Off' },
-                        { value: 'subtle', label: 'Subtle' },
-                        { value: 'normal', label: 'Normal' },
-                        { value: 'strong', label: 'Strong' },
+                        { value: 'off',      label: 'Off' },
+                        { value: 'subtle',   label: 'Grid Sutil' },
+                        { value: 'normal',   label: 'Grid Normal' },
+                        { value: 'strong',   label: 'Grid Forte' },
+                        { value: 'dotfield', label: 'DotField 3D' },
                       ]} />
+                    <TweakSection label="DotField (CTA + Hero)" />
+                    <TweakSlider label="Grad A opac." value={t.dotFieldGradFromOpacity}
+                      min={5} max={80} step={5} unit="%"
+                      onChange={(v) => setTweak('dotFieldGradFromOpacity', v)} />
+                    <TweakSlider label="Grad B opac." value={t.dotFieldGradToOpacity}
+                      min={5} max={80} step={5} unit="%"
+                      onChange={(v) => setTweak('dotFieldGradToOpacity', v)} />
+                    <TweakSlider label="Raio dot" value={t.dotFieldDotRadius}
+                      min={0.5} max={5} step={0.25} unit="px"
+                      onChange={(v) => setTweak('dotFieldDotRadius', v)} />
+                    <TweakSlider label="Espaçamento" value={t.dotFieldDotSpacing}
+                      min={4} max={40} step={1} unit="px"
+                      onChange={(v) => setTweak('dotFieldDotSpacing', v)} />
+                    <TweakSlider label="Raio cursor" value={t.dotFieldCursorRadius}
+                      min={100} max={800} step={25} unit="px"
+                      onChange={(v) => setTweak('dotFieldCursorRadius', v)} />
+                    <TweakToggle label="Bulge" value={t.dotFieldBulgeOnly}
+                      onChange={(v) => setTweak('dotFieldBulgeOnly', v)} />
+                    {t.dotFieldBulgeOnly && (
+                      <TweakSlider label="Força bulge" value={t.dotFieldBulgeStrength}
+                        min={10} max={200} step={5} unit=""
+                        onChange={(v) => setTweak('dotFieldBulgeStrength', v)} />
+                    )}
+                    <TweakToggle label="Sparkle" value={t.dotFieldSparkle}
+                      onChange={(v) => setTweak('dotFieldSparkle', v)} />
+                    <TweakSlider label="Onda" value={t.dotFieldWaveAmplitude}
+                      min={0} max={20} step={1} unit="px"
+                      onChange={(v) => setTweak('dotFieldWaveAmplitude', v)} />
                     <TweakSelect label="Luz cards" value={t.mercadoLightSpeed}
                       onChange={(v) => setTweak('mercadoLightSpeed', v)}
                       options={[

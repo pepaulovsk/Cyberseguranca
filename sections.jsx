@@ -21,12 +21,38 @@
  *  HERO
 \* ────────────────────────────────────────────────────────────────────── */
 
-function Hero({ gridIntensity = 'off', primaryRgb }) {
+function Hero({
+  gridIntensity            = 'off',
+  primaryRgb,
+  dotFieldDotRadius        = 1.5,
+  dotFieldDotSpacing       = 14,
+  dotFieldCursorRadius     = 500,
+  dotFieldBulgeOnly        = true,
+  dotFieldBulgeStrength    = 67,
+  dotFieldSparkle          = false,
+  dotFieldWaveAmplitude    = 0,
+  dotFieldGradientFrom     = 'rgba(168, 85, 247, 0.35)',
+  dotFieldGradientTo       = 'rgba(180, 151, 207, 0.25)',
+}) {
   return (
     <section className="lp-section hero" id="hero">
       <img className="hero-image" src="assets/placeholder-hero-purple.png" alt="" aria-hidden="true" />
       <div className="hero-bg" aria-hidden="true">
-        <InteractiveGrid cellSize={56} intensity={gridIntensity} primaryRgb={primaryRgb} />
+        {gridIntensity === 'dotfield' ? (
+          <DotField
+            dotRadius={dotFieldDotRadius}
+            dotSpacing={dotFieldDotSpacing}
+            cursorRadius={dotFieldCursorRadius}
+            bulgeOnly={dotFieldBulgeOnly}
+            bulgeStrength={dotFieldBulgeStrength}
+            sparkle={dotFieldSparkle}
+            waveAmplitude={dotFieldWaveAmplitude}
+            gradientFrom={dotFieldGradientFrom}
+            gradientTo={dotFieldGradientTo}
+          />
+        ) : (
+          <InteractiveGrid cellSize={56} intensity={gridIntensity} primaryRgb={primaryRgb} />
+        )}
       </div>
 
       <div className="container hero-inner">
@@ -1097,10 +1123,33 @@ function FAQItem({ index, question, answer, isOpen, onToggle }) {
  *  CTA FINAL (deep)
 \* ────────────────────────────────────────────────────────────────────── */
 
-function CTA({ dotGap = 22, dotSize = 1.4, showDots = true }) {
+function CTA({
+  dotFieldDotRadius     = 1.5,
+  dotFieldDotSpacing    = 14,
+  dotFieldCursorRadius  = 500,
+  dotFieldBulgeOnly     = true,
+  dotFieldBulgeStrength = 67,
+  dotFieldSparkle       = false,
+  dotFieldWaveAmplitude = 0,
+  dotFieldGradientFrom  = 'rgba(168, 85, 247, 0.35)',
+  dotFieldGradientTo    = 'rgba(180, 151, 207, 0.25)',
+  showDotField          = true,
+}) {
   return (
     <section className="lp-section section-deep dot-bg" id="cta">
-      {showDots && <DotPattern color="var(--color-primary)" gap={dotGap} size={dotSize} />}
+      {showDotField && (
+        <DotField
+          dotRadius={dotFieldDotRadius}
+          dotSpacing={dotFieldDotSpacing}
+          cursorRadius={dotFieldCursorRadius}
+          bulgeOnly={dotFieldBulgeOnly}
+          bulgeStrength={dotFieldBulgeStrength}
+          sparkle={dotFieldSparkle}
+          waveAmplitude={dotFieldWaveAmplitude}
+          gradientFrom={dotFieldGradientFrom}
+          gradientTo={dotFieldGradientTo}
+        />
+      )}
       <div className="hud-overlay" aria-hidden="true">
         <div className="hud-corner tl">
           <SerialTag system="CTA" prefix="SEC" />
