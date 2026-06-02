@@ -341,7 +341,7 @@ function Carreira() {
             <p>
               Um profissional que evolui de <strong>Analista Sênior (R$ 11k)</strong> para
               <strong> Coordenador (R$ 20k)</strong> recupera os R$ 13.134 do MBA em
-              <strong> cerca de 3 meses.</strong> O certificado USP
+              <strong> cerca de 2 meses.</strong> O certificado USP
               fortalece essa progressão em processos seletivos.
             </p>
             <CyButton variant="primary" size="md" as="a" href="#cta"
@@ -624,16 +624,17 @@ function CorpoDocente() {
   };
 
   const profs = [
-  { name: <>Adriana {/* Cristina Ferreira */} Caldana</>, role: 'Representante brasileira no ExPeG-PRME (ONU) e TEDx Speaker', tag: 'USP · ESALQ' },
-  { name: <>Cristina {/* Godoy Bernardo de */} Oliveira</>, role: 'PI do Centro de IA USP-IBM-Fapesp', tag: 'USP · IBM · Fapesp' },
-  { name: <>Fabiano {/* Guasti */} Lima</>, role: 'Livre-Docente em Métodos Quantitativos e Finanças · Pesquisador Fapesp', tag: 'USP · Fapesp' },
+  { name: <>Adriana {/* Cristina Ferreira */} Caldana</>, role: 'Representante brasileira no ExPeG-PRME (ONU) e TEDx Speaker', tag: 'USP · ESALQ', photo: 'assets/professores/adriana-caldana-200x300.jpg' },
+  { name: <>Cristina {/* Godoy Bernardo de */} Oliveira</>, role: 'PI do Centro de IA USP-IBM-Fapesp', tag: 'USP · IBM · Fapesp', photo: 'assets/professores/Cristina Godoy.jpg' },
+  { name: <>Fabiano {/* Guasti */} Lima</>, role: 'Livre-Docente em Métodos Quantitativos e Finanças · Pesquisador Fapesp', tag: 'USP · Fapesp', photo: 'assets/professores/Faiano Guasti Lima.jpg' },
   { name: <>Felipe {/* Mendes */} Borini</>, role: 'Pesquisador Sênior Glorad · Especialista em Inovação e Ecossistemas Tecnológicos', tag: 'USP · Glorad' },
-  { name: <>Fernando {/* de Souza */} Coelho</>, role: 'Especialista em Políticas Públicas e Governança', tag: 'Gov. Pública' },
-  { name: <>Fábio {/* Miguel */} Junges</>, role: 'CEO da SOU.cloud Serviços Gerenciados', tag: 'Indústria' },
+  { name: <>Fernando {/* de Souza */} Coelho</>, role: 'Especialista em Políticas Públicas e Governança', tag: 'Gov. Pública', photo: 'assets/professores/Fernando Coelho.jpg' },
+  { name: <>Fábio {/* Miguel */} Junges</>, role: 'CEO da SOU.cloud Serviços Gerenciados', tag: 'Indústria', photo: 'assets/professores/Fabio Junges.jpeg' },
   { name: <>Jaime {/* Simão */} Sichman</>, role: 'Doutor em Inteligência Artificial · Distinguished Speaker ACM', tag: 'USP · IA' },
-  { name: <>Bruno {/* Antunes */} Kadri</>, role: 'CTO no Pecege · Especialista em Gestão de Produtos, Pessoas e Engenharia de Software', tag: 'Pecege' },
-  { name: 'Daniel Donda', role: 'CEO e fundador da Hackers Hive', tag: 'Indústria' },
-  { name: <>Matheus {/* Borguete de */} Souza</>, role: 'CMO no Pecege · Líder das áreas de Produtos e de Segurança e Governança no Pecege', tag: 'Pecege' }];
+  { name: <>Bruno {/* Antunes */} Kadri</>, role: 'CTO no Pecege · Especialista em Gestão de Produtos, Pessoas e Engenharia de Software', tag: 'Pecege', photo: 'assets/professores/Bruno Kadri.png' },
+  { name: 'Daniel Donda', role: 'CEO e fundador da Hackers Hive', tag: 'Indústria', photo: 'assets/professores/Daniel Donda.png' },
+  // { name: <>Matheus {/* Borguete de */} Souza</>, role: 'CMO no Pecege · Líder das áreas de Produtos e de Segurança e Governança no Pecege', tag: 'Pecege' }
+  ];
 
 
   const navButtons = (
@@ -668,7 +669,10 @@ function CorpoDocente() {
                   <span className="docente-corner bl" />
                   <span className="docente-corner br" />
                 </div>
-                <span className="docente-photo-label">[PHOTO]</span>
+                {p.photo
+                  ? <img src={p.photo} alt="" className="docente-photo-img" />
+                  : <span className="docente-photo-label">[PHOTO]</span>
+                }
                 <span className="docente-photo-id" aria-hidden="true">ID · {String(i + 1).padStart(2, '0')}</span>
               </div>
               <div className="docente-info">
@@ -980,7 +984,7 @@ function Investimento({ tempero = true }) {
         <RevealOnScroll delay={160}>
           <div className={`roi-callout roi-callout-deep${tempero ? ' is-spiced' : ''}`}>
             <div className="roi-callout-metric" aria-hidden="true">
-              <span className="roi-callout-number">~3</span>
+              <span className="roi-callout-number">~2</span>
               <span className="roi-callout-unit">meses</span>
             </div>
             <div className="roi-callout-body">
@@ -988,7 +992,7 @@ function Investimento({ tempero = true }) {
               <p>
                 Com mensalidades a partir de R$597/mês ao longo de 22 meses, o investimento total é de
                 <strong>~R$13.134</strong>. Um Analista Sênior promovido a Coordenador passa a ganhar
-                a partir de R$5.900/mês. <strong>O investimento se paga em aproximadamente 3 meses</strong>.
+                a partir de R$5.900/mês. <strong>O investimento se paga em aproximadamente 2 meses</strong>.
               </p>
             </div>
           </div>
